@@ -1,0 +1,25 @@
+version: '3'
+services:
+  web:
+    build: web/
+    image: web
+    environment:
+      - PORT=80
+      - DATABASE_URL=postgres://db_user@db:5432/db_name
+      - DEBUG=myapp:*
+      - NODE_ENV=development
+    volumes:
+      - ./web/webapp:/usr/src/app:rw
+    ports:
+      - 80:80
+      - 443:443
+    command: npm run dev
+  db:
+    restart: unless-stopped
+    build: db/
+    image: db
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/code
+ 
