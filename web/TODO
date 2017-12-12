@@ -1,0 +1,9 @@
+- requester signup, with approval of the admin eventually
+
+- worker signup
+
+- campaign creation, tasks definition (requesters only)
+
+- campaign apply, tasks execution (workers only)
+
+- view and modify self own profile (requesters only)
