@@ -1,41 +1,38 @@
-extends layout
-
-block content
-  h1 #{title}
-  div#new-task
-    label(for='title') title
-    input(
-      type='text'
-      placeholder='title'
-      id='title'
-      name='title'
-      required
-    )
-    br
-    label(for='context') context
-    input(
-      type='text'
-      placeholder='context'
-      id='context'
-      name='context'
-      required
-    )
-    br
-    label(for='choices') choices
-    input(
-      type='text'
-      placeholder='choice; another choice'
-      id='choices'
-      name='choices'
-      required
-    )
-    br
-    label(for='keywords') keywords
-    input(
-      type='text'
-      placeholder='keyword another_keyword'
-      id='keywords'
-      name='keywords'
-      required
-    )
-  button Create
+h1 #{title}
+div#new-task
+  label(for='title') title
+  input(
+    type='text'
+    placeholder='title'
+    id='title'
+    name='title'
+    required
+  )
+  br
+  label(for='context') context
+  input(
+    type='text'
+    placeholder='context'
+    id='context'
+    name='context'
+    required
+  )
+  br
+  label(for='choices') choices
+  input(
+    type='text'
+    placeholder='choice; another choice'
+    id='choices'
+    name='choices'
+    required
+  )
+  br
+  label(for='keywords') keywords
+  input(
+    type='text'
+    placeholder='keyword another_keyword'
+    id='keywords'
+    name='keywords'
+    required
+  )
+button Create
