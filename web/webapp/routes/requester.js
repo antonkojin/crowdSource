@@ -17,4 +17,8 @@ router.get('/new_campaign', function(req, res, next) {
     res.render('requester-campaign-creation', {title: 'Create campaign'});
 });
 
+router.get('/new-task', function(req, res, next) {
+    res.render('requester-task-creation', {title: 'Create task'});
+});
+
 module.exports = router;

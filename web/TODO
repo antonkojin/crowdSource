@@ -4,6 +4,10 @@ requesters:
     - signup with approval of the admin
     - campaign creation (non db)
         - tasks
+            - context
+            - title
+            - keywords
+            - choices
         - #workers/task
         - task majority threshold
     - view and modify self own profile (if any)
