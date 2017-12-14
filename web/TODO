@@ -2,12 +2,12 @@
 
 requesters:
     - signup with approval of the admin
-    - campaign creation
+    - campaign creation (non db)
         - tasks
         - #workers/task
         - task majority threshold
-    - view and modify self own profile
-    - request campaign report 
+    - view and modify self own profile (if any)
+    - request campaign report
         - every task with it's result
         - statistics for campaign
         - top 10 workers for campaign
@@ -19,4 +19,3 @@ workers:
     - view my ranking
     - view executed tasks
     - view valid tasks
-
