@@ -9,4 +9,8 @@ router.get('/login', function(req, res, next) {
     res.render('login', {title: 'Requester login'});
 });
 
+router.get('/verification', function(req, res, next) {
+    res.render('requester-verification', {title: 'Requester verification'});
+});
+
 module.exports = router;
