@@ -13,4 +13,8 @@ router.get('/verification', function(req, res, next) {
     res.render('requester-verification', {title: 'Requester verification'});
 });
 
+router.get('/new_campaign', function(req, res, next) {
+    res.render('requester-campaign-creation', {title: 'Create campaign'});
+});
+
 module.exports = router;

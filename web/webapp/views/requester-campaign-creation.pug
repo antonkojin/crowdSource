@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  h1 #{title}
+  ul#tasks-list(hidden)
+    li.tasks-list-element
+  button#add-task(onclick='window.alert(\'add task\')') Add task
+  button#submit(onclick='window.alert(\'created :/ maybe not\')') Create
