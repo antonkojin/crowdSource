@@ -1,38 +1,31 @@
-h1 #{title}
-div#new-task
-  label(for='title') title
+#new-task-container
+  h4 New task
   input(
     type='text'
     placeholder='title'
-    id='title'
+    id='new-title'
     name='title'
     required
   )
-  br
-  label(for='context') context
   input(
     type='text'
     placeholder='context'
-    id='context'
+    id='new-context'
     name='context'
     required
   )
-  br
-  label(for='choices') choices
   input(
     type='text'
     placeholder='choice; another choice'
-    id='choices'
+    id='new-choices'
     name='choices'
     required
   )
-  br
-  label(for='keywords') keywords
   input(
     type='text'
     placeholder='keyword another_keyword'
-    id='keywords'
+    id='new-keywords'
     name='keywords'
     required
   )
-button Create
+  button#add-task Add task

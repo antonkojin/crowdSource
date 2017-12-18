@@ -1,28 +1,35 @@
-extends layout
-
-block content
-  h1 #{title}
-  ul#tasks-list(hidden)
-    li.tasks-list-element
-  br
-  button#add-task(onclick='window.alert(\'add task\')') Add task
-  br
-  label(for='workers-per-task') workers per task
-  input(
-    type='numeric'
-    placeholder='workers per task'
-    id='workers-per-task'
-    name='workers-per-task'
-    required
-  )
-  br
-  label(for='task-majority-threshold') task majority threshold
-  input(
-    type='numeric'
-    placeholder='task majority threshold'
-    id='task-majority-threshold'
-    name='task-majority-threshold'
-    required
-  )
-  br
-  button#submit(onclick='window.alert(\'created :/ maybe not\')') Create
+html
+  head
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/new-task.js')
+  body
+    h1 #{title}
+    ul#tasks-list
+      li#task-template.task(hidden)
+        label.task-title
+        label.task-context
+        label.task-choices
+        label.task-keyworkds
+    br
+    include new-task-modal.pug
+    br
+    label(for='workers-per-task') workers per task
+    input(
+      type='numeric'
+      placeholder='workers per task'
+      id='workers-per-task'
+      name='workers-per-task'
+      required
+    )
+    br
+    label(for='task-majority-threshold') task majority threshold
+    input(
+      type='numeric'
+      placeholder='task majority threshold'
+      id='task-majority-threshold'
+      name='task-majority-threshold'
+      required
+    )
+    br
+    button Exit
+    button Create
