@@ -11,25 +11,15 @@ html
         label.task-choices
         label.task-keyworkds
     br
-    include new-task-modal.pug
+    input(type='text' placeholder='title' id='new-title' required)
+    input(type='text' placeholder='context' id='new-context' required)
+    input(type='text' placeholder='choice; another choice' id='new-choices' required)
+    input(type='text' placeholder='keyword another_keyword' id='new-keywords' required)
+    button#add-task Add task
     br
-    label(for='workers-per-task') workers per task
-    input(
-      type='numeric'
-      placeholder='workers per task'
-      id='workers-per-task'
-      name='workers-per-task'
-      required
-    )
+    input(type='numeric' placeholder='workers per task' id='workers-per-task' required)
     br
-    label(for='task-majority-threshold') task majority threshold
-    input(
-      type='numeric'
-      placeholder='task majority threshold'
-      id='task-majority-threshold'
-      name='task-majority-threshold'
-      required
-    )
+    input(type='numeric' placeholder='task majority threshold' id='task-majority-threshold' required)
     br
     button Exit
     button Create
