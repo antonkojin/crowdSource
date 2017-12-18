@@ -1,9 +1,9 @@
 html
   head
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(src='/javascripts/new-task.js')
+    include stylesheets
+    //- script(src='/javascripts/new-task.js')
   body
-    h1 #{title}
+    h1 Create new campaign
     ul#tasks-list
       li#task-template.task(hidden)
         label.task-title
