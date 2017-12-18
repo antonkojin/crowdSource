@@ -3,23 +3,64 @@ html
     include stylesheets
     //- script(src='/javascripts/new-task.js')
   body
-    h1 Create new campaign
-    ul#tasks-list
-      li#task-template.task(hidden)
-        label.task-title
-        label.task-context
-        label.task-choices
-        label.task-keyworkds
-    br
-    input(type='text' placeholder='title' id='new-title' required)
-    input(type='text' placeholder='context' id='new-context' required)
-    input(type='text' placeholder='choice; another choice' id='new-choices' required)
-    input(type='text' placeholder='keyword another_keyword' id='new-keywords' required)
-    button#add-task Add task
-    br
-    input(type='numeric' placeholder='workers per task' id='workers-per-task' required)
-    br
-    input(type='numeric' placeholder='task majority threshold' id='task-majority-threshold' required)
-    br
-    button Exit
-    button Create
+    .container
+      h1 Create new campaign
+      .row
+        .column#new-task-box
+            form
+              h4 New task
+              .row
+                .column
+                  label(for='new-task-title') Title
+                  input(id='new-task-title' name='title' type='text' required)
+                .column
+                  label(for='new-task-context') Context
+                  input(id='new-task-context' name='context' type='text' required)
+              .row
+                .column
+                  label(for='new-task-choices') Choices
+                  input(id='new-task-choices' name='choices' type='text' required)
+                .column
+                  label(for='new-task-keywords') Keywords
+                  input(id='new-task-keywords' name='keywords' type='text' required)
+              .row
+                .column
+                  label(for='new-task-workers-per-task') Workers/task
+                  input(id='new-task-workers-per-task' name='workers-per-task' type='text' required)
+                .column
+                  label(for='new-task-majority-threshold') Majority threshold
+                  input(id='new-task-majority-threshold' name='majority-threshold' type='text' required)
+              .row
+                .column
+                  button#add-task Add task
+      .row#task-table
+        .column
+          h4 Task
+          table
+            thead
+              tr
+                th Title
+                th Context
+                th Choices
+                th Keywords
+                th
+            tbody
+              tr
+                td Stephen Curry
+                td 27
+                td 1,91
+                td Akron, OH
+                td
+                  button X
+              tr
+                td Klay Thompson
+                td 25
+                td 2,01
+                td Los Angeles, CA
+                td
+                  button X
+      .row
+        .column.column-20
+          button Exit
+        .column.column-20
+          button Create
