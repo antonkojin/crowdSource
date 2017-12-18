@@ -1,22 +1,24 @@
-extends layout
-
-block content
-  h1= title
-  form(action='#')
-      label(for='email')= 'email'
-      input(
-          type='text'
-          placeholder='Email'
-          id='email'
-          name='email'
-          required
-      )
-      label(for='password')= 'password'
-      input(
-          type='text'
-          placeholder='password'
-          id='password'
-          name='password'
-          required
-      )
-      button(type='submit')= 'Signup'
+doctype html
+html
+  head
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    h1= title
+    form(action='#')
+        label(for='email')= 'email'
+        input(
+            type='text'
+            placeholder='Email'
+            id='email'
+            name='email'
+            required
+        )
+        label(for='password')= 'password'
+        input(
+            type='text'
+            placeholder='password'
+            id='password'
+            name='password'
+            required
+        )
+        button(type='submit')= 'Signup'
