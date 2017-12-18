@@ -3,6 +3,7 @@ volumes:
     node_modules:
 services:
   web:
+    restart: unless-stopped
     build: web/
     image: web
     environment:
@@ -17,12 +18,12 @@ services:
       - 80:80
       - 443:443
     command: npm run dev
-  db:
-    restart: unless-stopped
-    build: db/
-    image: db
-    ports:
-      - 5432:5432
-    volumes:
-      - ./db:/code
+#  db:
+#    restart: unless-stopped
+#    build: db/
+#    image: db
+#    ports:
+#      - 5432:5432
+#    volumes:
+#      - ./db:/code
  
