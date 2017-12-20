@@ -7,35 +7,35 @@ html
     .container
       h1 Create new campaign
       .row
-        .column#new-task-box
+        .col#new-task-box
             form
               h4 New task
               .row
-                .column
+                .col
                   label(for='new-task-title') Title
                   input(id='new-task-title' name='title' type='text' required)
-                .column
+                .col
                   label(for='new-task-context') Context
                   input(id='new-task-context' name='context' type='text' required)
               .row
-                .column
+                .col
                   label(for='new-task-choices') Choices
                   input(id='new-task-choices' name='choices' type='text' required)
-                .column
+                .col
                   label(for='new-task-keywords') Keywords
                   input(id='new-task-keywords' name='keywords' type='text' required)
               .row
-                .column
+                .col
                   label(for='new-task-workers-per-task') Workers/task
                   input(id='new-task-workers-per-task' name='workers-per-task' type='text' required)
-                .column
+                .col
                   label(for='new-task-majority-threshold') Majority threshold
                   input(id='new-task-majority-threshold' name='majority-threshold' type='text' required)
               .row
-                .column
+                .col
                   button#add-task Add task
       .row#task-table
-        .column
+        .col
           h4 Tasks
           table
             thead
@@ -55,9 +55,9 @@ html
                   td
                     button Delete
       .row
-        .column
+        .col
           button.button-outline Exit
-        .column
+        .col
           button Create
     
     include scripts
