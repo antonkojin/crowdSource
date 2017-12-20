@@ -1,5 +1,6 @@
 html
   head
+    include metas
     include stylesheets
     //- script(src='/javascripts/new-task.js')
   body
@@ -35,7 +36,7 @@ html
                   button#add-task Add task
       .row#task-table
         .column
-          h4 Task
+          h4 Tasks
           table
             thead
               tr
@@ -45,22 +46,16 @@ html
                 th Keywords
                 th
             tbody
-              tr
-                td Stephen Curry
-                td 27
-                td 1,91
-                td Akron, OH
-                td
-                  button X
-              tr
-                td Klay Thompson
-                td 25
-                td 2,01
-                td Los Angeles, CA
-                td
-                  button X
+              each task in tasks
+                tr
+                  td= task.title
+                  td= task.context
+                  td= task.choices
+                  td= task.keywords
+                  td
+                    button Delete
       .row
-        .column.column-20
-          button Exit
-        .column.column-20
+        .column
+          button.button-outline Exit
+        .column
           button Create

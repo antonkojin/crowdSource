@@ -15,14 +15,6 @@
 
 .row {
     margin: 1em 0;
-    /*margin-bottom: 0.3em;*/
-}
-
-#new-task-box {
-    /*margin-top: 1em;*/
-    /*margin-bottom: 1.5em;*/
-    /*padding-left: 1em;*/
-    /*border-left: .3rem solid #9b4dca*/
 }
 
 #new-task-box form {
@@ -40,4 +32,12 @@ h4 {
 
 #new-task-box button {
     margin-top: 0.7em;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: lightgrey;
+}
+
+table button {
+    padding: 0 1em;
 }

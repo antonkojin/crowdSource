@@ -14,7 +14,11 @@ router.get('/verification', function(req, res, next) {
 });
 
 router.get('/new-campaign', function(req, res, next) {
-    res.render('requester-campaign-creation');
+    require('fs').readFile(require('path').join(__dirname, '../public/esempio_task.json'), 'utf8', (err, json) => {
+        const tasks = JSON.parse(json);
+        console.log(tasks);
+        res.render('requester-campaign-creation', {tasks: tasks.tasks});
+    });
 });
 
 module.exports = router;
