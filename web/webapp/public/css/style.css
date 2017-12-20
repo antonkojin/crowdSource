@@ -1,0 +1,7 @@
+div[class^='container'] .row div[class^='col'] {
+    /*border: solid yellow 1px;*/
+}
+
+input[type='number'] {
+    width: 3.5em;
+}
