@@ -1,0 +1,31 @@
+doctype html
+html
+  head
+    include metas
+    include styles
+    link(rel='stylesheet' href='/css/worker-task.css')
+    //- script(src='/javascripts/new-task.js')
+  body
+    .container
+      h1 Task
+      .row
+        .col#task-title.border.border-secondary.rounded.p-3
+          p!= task.title
+      .row
+        .col#task-context.border.border-secondary.rounded.p-3
+          p!= task.context
+      .row
+        .col#task-choices
+          .custom-controls-stacked
+            each value, choice in task.choices
+              label.custom-control.custom-radio
+                input.custom-control-input(type='radio' value=value name='radio-choice' required)
+                span.custom-control-indicator
+                span.custom-control-description= choice
+      .row
+        .col-auto
+          button.btn.btn-sm.btn-success(type='submit') Done
+        .col-auto
+          button.btn.btn-sm.btn-secondary Go back
+    
+    include scripts

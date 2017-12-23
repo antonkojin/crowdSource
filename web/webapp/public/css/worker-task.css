@@ -2,6 +2,16 @@ div[class^='container'] .row div[class^='col'] {
     /*border: solid yellow 1px;*/
 }
 
-.container .row .col {
+h1 {
+    margin-bottom: 0.6em;
+}
+
+/*
+#task-choices > div{
     margin-bottom: 1em;
+}
+*/
+
+p {
+    margin-bottom: 0;
 }
