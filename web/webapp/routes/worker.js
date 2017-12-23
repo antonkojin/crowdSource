@@ -21,15 +21,18 @@ router.get('/campaign/apply/:campaignId', function(req, res, next) {
 });
 
 router.get('/campaign/:campaignId/task', function(req, res, next) {
-    //TODO
-    res.send('execute task (create new one, if necessary)');
+    getTasksAnd( tasks => {
+        const index = Math.floor(Math.random() * tasks.length);
+        const task = tasks[index]
+        res.render('worker-task', {task: task});
+    });
 });
 
 let getTasksAnd = (fun) => {
     require('fs').readFile(
         require('path').join(__dirname, '../public/esempio_task.json'),
         'utf8',
-        (err, json) => fun(JSON.parse(json))
+        (err, json) => fun(JSON.parse(json).tasks)
     );
 };
 
