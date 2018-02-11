@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <h1>Create new campaign</h1>
+    <form id="new-task">
+      <h3>New task</h3>
+      <div>
+        <label for="new-task-title">Title</label>
+        <textarea id="new-task-title" name="title" required></textarea>
+      </div>
+      <div>
+        <label for="new-task-context">Context</label>
+        <textarea id="new-task-context" name="context" required></textarea>
+      </div>
+      <div>
+        <label for="new-task-choices">Choices</label>
+        <textarea id="new-task-choices" name="choices" type="text" required></textarea>
+      </div>
+      <div>
+        <label for="new-task-keywords">Keywords</label>
+        <textarea id="new-task-keywords" name="keywords" type="text" required></textarea>
+      </div>
+      <div>
+        <label for="new-task-workers-per-task">Workers/task</label>
+        <input id="new-task-workers-per-task" name="workers-per-task" type="number" value="1" required>
+      </div>
+      <div>
+        <label for="new-task-majority-threshold">Majority threshold</label>
+        <input id="new-task-majority-threshold" name="majority-threshold" type="number" value="1" required>
+      </div>
+      <div>
+        <button>Add task</button>
+      </div>
+    </form>
+    
+    <div id="campaign-overview">
+      <h3>Tasks</h3>
+      <ul>
+        <li>
+          <p>Task 1</p>
+        </li>
+        <li>
+          <p>Task 2</p>
+        </li>
+        <li>
+          <p>Task 3</p>
+        </li>
+        <li>
+          <p>Task 4</p>
+        </li>
+        <li>
+          <p>Task 5</p>
+        </li>
+      </ul>
+    </div>
+    <button>Create</button>
+  </body>
+</html>
