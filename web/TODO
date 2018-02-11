@@ -1,5 +1,3 @@
-
-
 requesters:
     - signup with approval of the admin
     - campaign creation (non db)
