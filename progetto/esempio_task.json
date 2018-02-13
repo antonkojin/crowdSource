@@ -1,0 +1,68 @@
+{
+    "tasks": [
+            {
+                "context": "Louis Armstrong, a sad and powerful voice", 
+                "title": "Valuta il \"sentiment\" del messaggio sottostante.<br /> Sentiment <b>positivo</b>: il messaggio esprime un giudizio positivo rispetto all'argomento trattatp<br />Sentiment <b>negativo</b>: il messaggio esprime un giudizio negativo rispetto all'argomento trattato<br />Sentiment <b>neutro</b> (caso 1): il messaggio NON esprime un giudizio positivo o negativo rispetto all'argomento trattato<br />Sentiment <b>neutro</b> (caso 2): il messaggio esprime SIA un giudizio positivo SIA un giudizio negativo rispetto all'argomento trattato<br /><br />Ricorda che l'obiettivo è valutare il sentiment espresso dall'autore e non esprimere il proprio sentiment rispetto al messaggio.", 
+                "keywords": "musica jazz, musica, sensibilità ai problemi",
+                "choices": {
+                    "Neutro": 0, 
+                    "Positivo": 1, 
+                    "Negativo": -1
+                }, 
+                "id": 28
+            }, 
+            {
+                "context": "Per me la musica classica è la musica ideale quando sono in cerca di ispirazioni. In particolare trovo i suoni solenni e svettanti davvero stimolanti. I miei preferiti sono Beethoven e Bach.", 
+                "title": "Valuta il \"sentiment\" del messaggio sottostante.<br /> Sentiment <b>positivo</b>: il messaggio esprime un giudizio positivo rispetto all'argomento trattatp<br />Sentiment <b>negativo</b>: il messaggio esprime un giudizio negativo rispetto all'argomento trattato<br />Sentiment <b>neutro</b> (caso 1): il messaggio NON esprime un giudizio positivo o negativo rispetto all'argomento trattato<br />Sentiment <b>neutro</b> (caso 2): il messaggio esprime SIA un giudizio positivo SIA un giudizio negativo rispetto all'argomento trattato<br /><br />Ricorda che l'obiettivo è valutare il sentiment espresso dall'autore e non esprimere il proprio sentiment rispetto al messaggio.", 
+                "keywords": "musica classica, sensibilità ai problemi",
+                "choices": {
+                    "Neutro": 0, 
+                    "Positivo": 1, 
+                    "Negativo": -1
+                }, 
+                "id": 3
+            }, 
+            {
+                "context": "The rock band U2 is good,  but not great concert in San Jose", 
+                "title": "Valuta il \"sentiment\" del messaggio sottostante.<br /> Sentiment <b>positivo</b>: il messaggio esprime un giudizio positivo rispetto all'argomento trattatp<br />Sentiment <b>negativo</b>: il messaggio esprime un giudizio negativo rispetto all'argomento trattato<br />Sentiment <b>neutro</b> (caso 1): il messaggio NON esprime un giudizio positivo o negativo rispetto all'argomento trattato<br />Sentiment <b>neutro</b> (caso 2): il messaggio esprime SIA un giudizio positivo SIA un giudizio negativo rispetto all'argomento trattato<br /><br />Ricorda che l'obiettivo è valutare il sentiment espresso dall'autore e non esprimere il proprio sentiment rispetto al messaggio.", 
+                "keywords": "musica, sensibilità ai problemi",
+                "choices": {
+                    "Neutro": 0, 
+                    "Positivo": 1, 
+                    "Negativo": -1
+                }, 
+                "id": 13
+            }, 
+            {
+                "context": "<i>The dark side of moon</i>", 
+                "title": "Indica la categoria migliore per il seguente album musicale.",
+                "keywords": "musica", 
+                "choices": {
+                    "Jazz": "Jazz", 
+                    "Rock": "Rock", 
+                    "Pop": "Pop"
+                },
+                "id": 9
+            }, 
+            {
+                "context": "All'inizio del turno, il giocatore deve lanciare i dadi e spostare in avanti la sua pedina in un numero di caselle equivalenti al numero che compare sul dado lanciato.", 
+                "title": "La seguente regola di Dungeons and Dragons è vera o falsa.", 
+                "keywords": "giochi da tavolo, comprensione orale-scritta",
+                "choices": {
+                    "Vera": "Vera", 
+                    "Falsa": "Falsa"
+                },
+                "id": 20
+            }, 
+            {
+                "context": "Italy earthquake: More than 15,000 people in shelters! https://www.youtube.com/watch?v=8B1ioB8OykQ", 
+                "title": "indica se il seguente tweet sia o meno spam:", 
+                "keywords": "cronaca di attualità, sensibilità ai problemi",
+                "choices": {
+                    "Non spam": "Non spam", 
+                    "Spam": "Spam"
+                },
+                "id": 27
+            }
+    ]
+}
