@@ -1,6 +1,6 @@
 requesters:
     - signup with approval of the admin
-    - campaign creation (non db)
+    - campaign creation (with name) (non db)
         - tasks
             - context
             - title
@@ -16,8 +16,6 @@ requesters:
 
 workers:
     - signup and profile definition (ex: [musica: 10, arte: 7])
-    - apply campaign
-        - tasks request and execution
-    - view my ranking
-    - view executed tasks
-    - view valid tasks
+    - view campaigns and apply new campaign
+        - tasks request and execution for a campaign
+    - view my ranking, executed tasks, valid tasks
