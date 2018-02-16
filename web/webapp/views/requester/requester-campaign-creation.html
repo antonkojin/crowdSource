@@ -37,6 +37,8 @@
     </form>
     
     <div id="campaign-overview">
+      <label for="campaign-name">Campaign name</label>
+      <input type="text" name="campaign-name" id="campaign-name">
       <h3>Tasks</h3>
       <ul>
         <li>
@@ -55,7 +57,15 @@
           <p>Task 5</p>
         </li>
       </ul>
+      <button>Create</button>
     </div>
-    <button>Create</button>
   </body>
+
+  <style>
+    #new-task, #campaign-overview {
+      border: solid 1px black;
+      margin: 1rem 0;
+      padding: 0.5rem;
+    }
+  </style>
 </html>
