@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+  </head>
+  <body>
+    <form action="worker-campaigns.html" method="GET">
+      <div id="task-description">
+        <p id="task-title" name="title" required="">Valuta il \"sentiment\" del messaggio sottostante.<br>Sentiment<b>positivo</b>: il messaggio esprime un giudizio positivo rispetto all'argomento trattatp<br>Sentiment<b>negativo</b>: il messaggio esprime un giudizio negativo rispetto all'argomento trattato<br>Sentiment<b>neutro</b>(caso 1): il messaggio NON esprime un giudizio positivo o negativo rispetto all'argomento trattato<br>Sentiment<b>neutro</b>(caso 2): il messaggio esprime SIA un giudizio positivo SIA un giudizio negativo rispetto all'argomento trattato<br><br>Ricorda che l'obiettivo è valutare il sentiment espresso dall'autore e non esprimere il proprio sentiment rispetto al messaggio.</p>
+        <p id="task-context" name="context" required="">Louis Armstrong, a sad and powerful voice</p>
+      </div>
+      <div id="task-choices">
+        <input id="choice1" type="radio" name="choice" value="0" required="">
+        <label for="choice1">Neutro</label>
+        <input id="choice1" type="radio" name="choice" value="1" required="">
+        <label for="choice1">Positivo</label>
+        <input id="choice1" type="radio" name="choice" value="-1" required="">
+        <label for="choice1">Negativo</label>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </body>
+</html>
