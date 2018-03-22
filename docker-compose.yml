@@ -1,6 +1,6 @@
 version: '3'
-volumes:
-    node_modules:
+# volumes:
+#     node_modules:
 services:
   web:
     restart: unless-stopped
@@ -13,17 +13,17 @@ services:
       - NODE_ENV=development
     volumes:
       - ./web/webapp:/usr/src/app:rw
-      - node_modules:/usr/src/app/webapp/node_modules
+      - /usr/src/app/node_modules
     ports:
       - 80:80
       - 443:443
     command: npm run dev
-#  db:
-#    restart: unless-stopped
-#    build: db/
-#    image: db
-#    ports:
-#      - 5432:5432
-#    volumes:
-#      - ./db:/code
+  db:
+    restart: unless-stopped
+    build: db/
+    image: db
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/code
  
