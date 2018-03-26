@@ -7,10 +7,13 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function(req, res) {
-  db.testQuery();
-  db.login(req.body.email, req.body.password,
-    () => res.send('logged in'),
-    () => res.send('not logged in')
+  db.query(
+    'SELECT true FROM users WHERE email = $1 AND password = $2;',
+    [req.body.email, req.body.password]
+  ).then(
+    result => res.json(result)
+  ).catch(
+    reason => res.send('DB ERROR')
   );
 });
 
