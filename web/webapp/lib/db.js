@@ -2,6 +2,8 @@ const { Client } = require('pg');
 const client = new Client(process.env.DATABASE_URL);
 
 client.connect()
+    .then(() => console.log('db connected'))
+    .catch((e) => console.error('db connection error', e.stack));
 
 function query (query, args, callback) {
     client.query(query, args, (err, res) => {
@@ -26,7 +28,9 @@ function login(email, password, onLogged, onNotLogged) {
 };
 
 function close() {
-    client.end();
+    client.end()
+        .catch(e => console.log('db disconnection error', e.stack))
+        .then(() => console.log('db disconnected'));
 }
 
 module.exports = {
