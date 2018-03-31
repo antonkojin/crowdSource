@@ -11,8 +11,12 @@ router.post('/', function(req, res) {
     'INSERT INTO users (email, password) VALUES ($1, $2);',
     [req.body.email, req.body.password]
   )
-    .catch(err => res.send('DB ERROR'))
-    .then(result => res.send(res));
+    .then(result => {
+      res.send(result);
+    })
+    .catch(error => {
+      res.send('DB ERROR', error.stack);
+    });
 });
 
 module.exports = router;

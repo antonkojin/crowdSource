@@ -1,6 +1,4 @@
 version: '3'
-# volumes:
-#     node_modules:
 services:
   web:
     restart: unless-stopped
@@ -8,7 +6,7 @@ services:
     image: web
     environment:
       - PORT=80
-      - DATABASE_URL=postgres://db_user@db:5432/db_name
+      - DATABASE_URL=postgres://db_user:db_password@db:5432/db_name
       - DEBUG=myapp:*
       - NODE_ENV=development
     volumes:
@@ -17,6 +15,7 @@ services:
     ports:
       - 80:80
       - 443:443
+      - 9229:9229
     command: npm run dev
   db:
     restart: unless-stopped
@@ -26,4 +25,7 @@ services:
       - 5432:5432
     volumes:
       - ./db:/code
- 
+    environment:
+      - POSTGRES_DB=db_name
+      - POSTGRES_USER=db_user
+      - POSTGRES_PASSWORD=db_password

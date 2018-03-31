@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+docker-compose exec db psql --username db_user --dbname db_name
