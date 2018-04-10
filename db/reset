@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
 docker-compose down --volumes &&
-docker-compose up --build --force-recreate db
-# docker-compose up -d web &&
-# docker-compose logs --follow
+docker-compose up -d --build --force-recreate db
+docker-compose up -d web &&
+docker-compose logs --follow
