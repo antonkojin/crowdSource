@@ -1,0 +1,9 @@
+- tutti i worker partono con punteggio 1 in ogni keyword
+
+- malus / bonus
+    - se e' nella maggioranza che ha vinto il task riceve un bonus per le keyword del task
+    - altrimenti riceve un malus per le keyword del task
+
+- si assegna un task ai worker con una distribuzione lineare sull'insieme P 
+    - P(k) = massimo punteggio tra tutti i worker per la keyword k
+    - P = unione dei P(k) per tutte le keywords k
