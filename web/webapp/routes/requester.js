@@ -92,7 +92,7 @@ router.post('/new-campaign', function (req, res) {
         start: req.body.start,
         end: req.body.end,
         apply_end: req.body.apply_end,
-        requester: 1 // TODO: still don't want to implement users? Why? 
+        requester: 1 // TODO: still don't want to imlement login? because of cookies and session and things?
       });
 
 
