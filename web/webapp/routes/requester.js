@@ -64,7 +64,6 @@ async function insertKeyword(transaction, keyword) {
     WHERE description = \${description};
   `;
   const insertResult = await (transaction.oneOrNone(queryInsertKeyword, keyword));
-  // TODO: not sure can do that or have to do this check in the database 
   if ( insertResult !== null ) {
     return insertResult.id;
   } else {
