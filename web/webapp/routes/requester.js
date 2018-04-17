@@ -36,9 +36,7 @@ function insertChoices(tx, choices) {
   return tx.batch(choices.map(choice => tx.none(queryInsertChoice, choice)));
 };
 
-router.post('/new-campaign', function (req, res) { // TODO
-  var unresolved = [];
-  
+async function insertTask(tx, task) {
   const queryInsertTask = `
     INSERT INTO task (name, context, campaign) VALUES
     (
@@ -47,16 +45,35 @@ router.post('/new-campaign', function (req, res) { // TODO
       \${campaign}
     ) RETURNING id;
   `;
+  const { id } = await tx.one(queryInsertTask, task);
+  return id;
+};
 
-
+async function insertKeyword(tx, keyword) {
+  //TODO: first check if keywork alredy present
   const queryInsertKeyword = `
-    INSERT INTO keyword (description) VALUES (\${description});
+    INSERT INTO keyword (description) VALUES (\${description}) RETURNING id;
   `;
+  const { id } = await (tx.one(
+    queryInsertKeyword,
+    keyword
+  ));
+  return id;
+};
 
+function insertTaskKeyword(tx, {taskId, keywordId}) {
+  const query = `
+    INSERT INTO task_keyword(task, keyword)
+    VALUES (\${taskId}, \${keywordId});
+  `;
+  const promise = tx.none(query, {taskId, keywordId})
+  return promise;
+};
+
+router.post('/new-campaign', function (req, res) { // TODO
   db.db.tx(async tx => {
     // campaign -> task -> {choice, keyword -> task_keyword)
     try {
-      var unresolved = [];
       const campaignId = await insertCampaign(tx, {
         name: req.body.name,
         majority_threshold: req.body.majority_threshold,
@@ -67,14 +84,24 @@ router.post('/new-campaign', function (req, res) { // TODO
         requester: 1 // TODO: get user id
       });
 
-      const unresolvedChoicesPromises = req.body.tasks.map(async task => {
-        const { taskId } = await (tx.one(queryInsertTask, {
-            name: task.name,
-            context: task.context,
-            campaign: campaignId
-        }));
 
-        const unresolvedChoicesInserts = insertChoices(tx,
+
+      const promises = req.body.tasks.map(async task => {
+        const taskId = await insertTask(tx, {
+          name: task.name,
+          context: task.context,
+          campaign: campaignId
+        });
+
+        const taskKeywordPromises = task.keywords.map(async keyword => {
+          const keywordId = await (insertKeyword(tx, {
+            description: keyword
+          }));
+          const taskKeywordPromise = insertTaskKeyword(tx, {taskId, keywordId});
+          return taskKeywordPromise;
+        });
+
+        const choicesPromise = insertChoices(tx,
           task.choices.map(choice => ({
             name: choice.name,
             value: choice.val,
@@ -82,10 +109,13 @@ router.post('/new-campaign', function (req, res) { // TODO
           }))
         );
         
-        return unresolvedChoicesInserts;
+        return tx.batch([
+          tx.batch(taskKeywordPromises),
+          choicesPromise
+        ]);
       });
       
-      await tx.batch(unresolvedChoicesPromises);
+      await tx.batch(promises);
       res.sendStatus(200);
     } catch (err) {
       console.error(err);
