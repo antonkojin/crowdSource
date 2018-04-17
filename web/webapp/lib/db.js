@@ -7,6 +7,7 @@ const errorCodes = {
 };
 
 module.exports = {
+  pgp,
   db,
   errorCodes
 };
