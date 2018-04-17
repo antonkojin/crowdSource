@@ -37,7 +37,7 @@ CREATE TABLE choice (
 
 CREATE TABLE keyword (
     id SERIAL PRIMARY KEY,
-    description VARCHAR NOT NULL
+    description VARCHAR NOT NULL UNIQUE
 );
 
 CREATE TABLE task_keyword (

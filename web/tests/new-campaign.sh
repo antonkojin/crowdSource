@@ -13,7 +13,7 @@ curl --include -X POST \
 		{
 			"name": "task test",
 			"context": "task context",
-			"keywords": ["music, games"],
+			"keywords": ["sentiment analisys, games"],
 			"choices": [
 				{"name": "positive", "val": 1},
 				{"name": "negative", "val": -1},
@@ -23,7 +23,7 @@ curl --include -X POST \
 		{
 			"name": "task test 2",
 			"context": "task context 2",
-			"keywords": ["music, games"],
+			"keywords": ["sentiment analysis, music"],
 			"choices": [
 				{"name": "positive", "val": 1},
 				{"name": "negative", "val": -1},
