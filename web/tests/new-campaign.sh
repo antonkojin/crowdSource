@@ -3,7 +3,7 @@ curl --include -X POST \
   -H 'Cache-Control: no-cache' \
   -H 'Content-Type: application/json' \
   -d '{
-	"name": "campaign_test",
+	"name": "sql injection?;--",
 	"majority_threshold": 1,
 	"workers_per_task": 1,
 	"start": "2018-10-10 00:00",
@@ -21,7 +21,7 @@ curl --include -X POST \
 			]
 		},
 		{
-			"name": "task test 2",
+			"name": "task test 2--",
 			"context": "task context 2",
 			"keywords": ["sentiment analysis, music"],
 			"choices": [

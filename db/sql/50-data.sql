@@ -4,7 +4,25 @@ INSERT INTO "user" (email, password, type) VALUES
 
 INSERT INTO campaign (name, majority_threshold, workers_per_task, "start", "end", apply_end, requester) VALUES
 (
-    'test_campaign',
+    'test_campaign_1',
+    '1',
+    '1',
+    '2018-10-10 12:00',
+    '2018-10-30 24:00',
+    '2018-10-09 24:00',
+    1    
+),
+(
+    'test_campaign_2',
+    '1',
+    '1',
+    '2018-10-10 12:00',
+    '2018-10-30 24:00',
+    '2018-04-01 24:00',
+    1    
+),
+(
+    'test_campaign_3',
     '1',
     '1',
     '2018-10-10 12:00',
@@ -61,3 +79,6 @@ INSERT INTO worker_attitude (worker, keyword, level) VALUES
 (2, 2, 2),
 (2, 3, 3),
 (2, 4, 4);
+
+INSERT INTO worker_campaign (worker, campaign) VALUES
+(2, 1);
