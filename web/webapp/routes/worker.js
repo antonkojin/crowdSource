@@ -3,20 +3,23 @@ var router = express.Router();
 var db = require('../lib/db');
 
 router.get('/campaigns', async function(req, res, next) {
-  //TODO
-  res.sendStatus(555);
-});
-
-
-router.get('/campaigns/apply', async function(req, res, next) {
+  const workerId = 2; //TODO: authentication
   try{
-    const result = await(db.db.any(`
+    const appliable = await(db.db.any(`
       SELECT * FROM
       campaign
       WHERE apply_end > CURRENT_TIMESTAMP
-    `, {}));
-    console.log(result);
-    res.json(result);
+    `));
+    const applied = await(db.db.any(`
+      SELECT * FROM
+      worker_campaign
+      WHERE worker = \${worker};
+    `, {
+      worker: workerId
+    }));
+    const campaigns = {applied, appliable}
+    console.log({campaigns});
+    res.render('worker-campaigns', {campaigns})
   } catch (error) {
     console.error(error);
     res.send(500);
@@ -119,8 +122,29 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
   }
 });
 
-router.post('/campaign/:campaignId/task', async function(req, res, next) {
-  res.send(555); //TODO
+router.post('/campaign/:campaignId/task/:taskId/choice/:choiceId', async function(req, res, next) {
+  const workerId = 2; //TODO: authentication
+  const campaignId = req.params.campaignId;
+  const taskId = req.params.taskId;
+  const choiceId = req.params.choiceId;
+  try {
+    //TODO: check choice is in task and task is in campaign for worker
+    await (db.db.none(`
+      INSERT INTO worker_choice (worker, choice) VALUES
+      (\${worker}, \${choice})
+    `, {
+      worker: workerId,
+      choice: choiceId
+    }));
+    res.sendStatus(200);
+  } catch (error) {
+    if (error.code == db.errorCodes.unique_violation) {
+      res.sendStatus(409);
+    } else {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
 });
 
 module.exports = router;

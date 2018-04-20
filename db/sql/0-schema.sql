@@ -56,5 +56,12 @@ CREATE TABLE worker_attitude (
 CREATE TABLE worker_campaign (
   worker INTEGER REFERENCES "user"(id) ON UPDATE CASCADE,
   campaign INTEGER REFERENCES campaign(id) ON UPDATE CASCADE,
-  PRIMARY KEY (worker, campaign)
+  PRIMARY KEY (worker, campaign),
+  score INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE worker_choice (
+  worker INTEGER REFERENCES "user"(id) ON UPDATE CASCADE,
+  choice INTEGER REFERENCES choice(id) ON UPDATE CASCADE,
+  PRIMARY KEY (worker, choice)
 );
