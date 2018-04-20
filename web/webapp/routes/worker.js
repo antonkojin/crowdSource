@@ -9,9 +9,8 @@ router.get('/campaigns', async function(req, res, next) {
 
 
 router.get('/campaigns/apply', async function(req, res, next) {
-  const workerId = 2; //TODO: authentication
   try{
-    const result = await (db.db.any(`
+    const result = await(db.db.any(`
       SELECT * FROM
       campaign
       WHERE apply_end > CURRENT_TIMESTAMP
@@ -24,10 +23,28 @@ router.get('/campaigns/apply', async function(req, res, next) {
   }
 });
 
-router.post('/campaigns/apply/:campaignId', function(req, res, next) {
-  // res.send(req.params);
-  //TODO
-  res.send('applyed for a new campaign');
+router.post('/campaigns/apply/:campaignId', async function(req, res, next) {
+  const workerId = 2; //TODO: authentication
+  const campaignId = req.params.campaignId;
+  try{
+    const result = await(db.db.none(`
+      INSERT INTO worker_campaign (worker, campaign) VALUES
+      (\${worker}, \${campaign});
+    `, {
+      worker: workerId,
+      campaign: campaignId
+    }));
+    res.sendStatus(200);
+  } catch (error) {
+    if (error.code == db.errorCodes.unique_violation) {
+      res.sendStatus(409);
+    } else if (error.code == db.errorCodes.foreign_key_violation) {
+      res.sendStatus(404);
+    } else {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
 });
 
 router.get('/campaign/:campaignId/task', async function(req, res, next) {
