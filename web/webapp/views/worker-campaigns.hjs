@@ -8,17 +8,18 @@
     <div id="my-campaigns">
       <h4>Ongoing Campaigns</h4>
       <ul>
-        <li><a href="worker-task.html">Campaign 1</a></li>
-        <li><a href="worker-task.html">Campaign 2</a></li>
-        <li><a href="worker-task.html">Campaign 3</a></li>
+      {{#campaigns.applied}}
+        <li><a href="/worker/campaign/{{id}}/task">{{name}}</a></li>
+      {{/campaigns.applied}}
       </ul>
     </div>
     <div id="other-campaigns">
       <h4>Apply to Campaign</h4>
       <ul>
-        <li><a href="">Campaign 4</a></li>
-        <li><a href="">Campaign 5</a></li>
-        <li><a href="">Campaign 6</a></li>
+        {{#campaigns.appliable}}
+        {{!-- with javascript append handler to send POST request to apply to campaign --}}
+        <li><a href="">{{name}}</a></li> 
+        {{/campaigns.appliable}}
       </ul>
     </div>
   </body>

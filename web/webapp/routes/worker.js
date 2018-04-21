@@ -2,24 +2,34 @@ var express = require('express');
 var router = express.Router();
 var db = require('../lib/db');
 
-router.get('/campaigns', async function(req, res, next) {
+router.get('/campaigns', async function (req, res, next) {
   const workerId = 2; //TODO: authentication
   try{
     const appliable = await(db.db.any(`
       SELECT * FROM
       campaign
       WHERE apply_end > CURRENT_TIMESTAMP
-    `));
-    const applied = await(db.db.any(`
-      SELECT * FROM
-      worker_campaign
-      WHERE worker = \${worker};
+      AND id NOT IN (
+        SELECT campaign FROM
+        worker_campaign
+        WHERE worker = $\{worker} 
+      )
     `, {
       worker: workerId
     }));
-    const campaigns = {applied, appliable}
-    console.log({campaigns});
-    res.render('worker-campaigns', {campaigns})
+    console.log({appliable});
+    
+    const applied = await(db.db.any(`
+      SELECT campaign.id, campaign.name FROM
+      worker_campaign JOIN campaign
+      ON campaign.id = worker_campaign.campaign
+      WHERE worker_campaign.worker = \${worker};
+    `, {
+      worker: workerId
+    }));
+    console.log({applied});
+    const campaigns = {applied, appliable};
+    res.render('worker-campaigns', {campaigns});
   } catch (error) {
     console.error(error);
     res.send(500);
@@ -52,7 +62,7 @@ router.post('/campaigns/apply/:campaignId', async function(req, res, next) {
 
 router.get('/campaign/:campaignId/task', async function(req, res, next) {
   const workerId = 2; //TODO: authentication
-
+  const campaignId = req.params.campaignId;
   try {
     const resultTaskId = await db.db.one(` 
       WITH tasks_keywords AS (
@@ -78,7 +88,7 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
         ORDER BY sum DESC LIMIT 1
     ;`, {
       worker: workerId,
-      campaign: req.params.campaignId
+      campaign: campaignId
     });
     const taskId = resultTaskId.task;
 
@@ -111,7 +121,8 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
       id: resultTask.id,
       name: resultTask.name,
       context: resultTask.context,
-      choices: choices
+      choices: choices,
+      campaignId: campaignId
     };
     console.log(task);
     
@@ -122,24 +133,32 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
   }
 });
 
-router.post('/campaign/:campaignId/task/:taskId/choice/:choiceId', async function(req, res, next) {
+router.post('/campaign/:campaignId/task/:taskId/choice/', async function(req, res, next) {
   const workerId = 2; //TODO: authentication
   const campaignId = req.params.campaignId;
   const taskId = req.params.taskId;
-  const choiceId = req.params.choiceId;
+  const choiceValue = req.body.choice;
   try {
     //TODO: check choice is in task and task is in campaign for worker
     await (db.db.none(`
-      INSERT INTO worker_choice (worker, choice) VALUES
-      (\${worker}, \${choice})
+      INSERT INTO worker_choice (worker, choice)
+      (
+        SELECT \${worker}, choice.id
+        FROM choice
+        WHERE task = \${task}
+        AND value = \${value}
+      )
     `, {
       worker: workerId,
-      choice: choiceId
+      task: taskId,
+      value: choiceValue
     }));
-    res.sendStatus(200);
+
+      res.redirect('/worker/campaigns');
   } catch (error) {
     if (error.code == db.errorCodes.unique_violation) {
-      res.sendStatus(409);
+      // res.location('/worker/campaigns').send();
+      res.redirect('/worker/campaigns');
     } else {
       console.error(error);
       res.sendStatus(500);

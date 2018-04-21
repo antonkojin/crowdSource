@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
   </head>
   <body>
-    <form action="worker-campaigns.html" method="GET">
+    <form action="/worker/campaign/{{task.campaignId}}/task/{{task.id}}/choice" method="POST">
       <div id="task-description">
         <p id="task-title" name="title">{{task.name}}</p>
         <p id="task-context" name="context">{{task.context}}</p>
@@ -17,6 +17,7 @@
         {{/task.choices}}
       </div>
       <button type="submit">Submit</button>
+      <a href="/worker/campaigns">Back</button>
     </form>
   </body>
 </html>
