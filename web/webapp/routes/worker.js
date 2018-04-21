@@ -65,11 +65,17 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
   const campaignId = req.params.campaignId;
   try {
     const resultTaskId = await db.db.one(` 
-      WITH tasks_keywords AS (
+      WITH done_tasks AS (
+        SELECT choice.task FROM
+        worker_choice JOIN choice
+        ON worker_choice.choice = choice.id
+        WHERE worker_choice.worker = \${worker} 
+      ), tasks_keywords AS (
         SELECT task_keyword.task, task_keyword.keyword FROM
         task JOIN task_keyword
         ON task.id = task_keyword.task
         WHERE task.campaign = \${campaign}
+        AND task.id NOT IN (SELECT * FROM done_tasks)
       ), worker_keywords AS (
         SELECT w.keyword, w.level FROM
         worker_attitude AS w
@@ -128,8 +134,12 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
     
     res.render('worker-task', {task: task});
   } catch (error) {
-    console.error(error);
-    res.sendStatus(500);
+    if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
+      res.sendStatus(404);
+    } else {
+      console.error(error);
+      res.sendStatus(500);
+    }
   }
 });
 
