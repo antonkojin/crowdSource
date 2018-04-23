@@ -3,7 +3,7 @@ var router = express.Router();
 var db = require('../lib/db');
 
 router.get('/campaigns', async function (req, res, next) {
-  const workerId = 2; //TODO: authentication
+  const workerId = 1; //TODO: authentication
   try{
     const appliable = await(db.db.any(`
       SELECT * FROM
@@ -37,7 +37,7 @@ router.get('/campaigns', async function (req, res, next) {
 });
 
 router.post('/campaigns/apply/:campaignId', async function(req, res, next) {
-  const workerId = 2; //TODO: authentication
+  const workerId = 1; //TODO: authentication
   const campaignId = req.params.campaignId;
   try{
     const result = await(db.db.none(`
@@ -61,7 +61,7 @@ router.post('/campaigns/apply/:campaignId', async function(req, res, next) {
 });
 
 router.get('/campaign/:campaignId/task', async function(req, res, next) {
-  const workerId = 2; //TODO: authentication
+  const workerId = 1; //TODO: authentication
   const campaignId = req.params.campaignId;
   try {
     const resultTaskId = await db.db.one(` 
@@ -135,7 +135,7 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
     res.render('worker-task', {task: task});
   } catch (error) {
     if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
-      res.sendStatus(404);
+      res.render('worker-no-more-tasks');
     } else {
       console.error(error);
       res.sendStatus(500);
@@ -144,7 +144,7 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
 });
 
 router.post('/campaign/:campaignId/task/:taskId/choice/', async function(req, res, next) {
-  const workerId = 2; //TODO: authentication
+  const workerId = 1; //TODO: authentication
   const campaignId = req.params.campaignId;
   const taskId = req.params.taskId;
   const choiceValue = req.body.choice;

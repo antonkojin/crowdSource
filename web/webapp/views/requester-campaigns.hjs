@@ -14,6 +14,6 @@
       <li><a href="requester-campaign-report.html">Campaign 6</a></li>
       <li><a href="requester-campaign-report.html">Campaign 7</a></li>
     </ul>
-    <button onclick="window.location.replace(&quot;requester-campaign-creation.html&quot;)">Create campaign</button>
+    <button onclick="window.location = 'new-campaign'">Create campaign</button>
   </body>
 </html>

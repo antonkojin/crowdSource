@@ -1,13 +1,13 @@
--- users(ID, email, password, type)
--- campaigns(ID, name, )
-
-
-CREATE TYPE USER_TYPE AS ENUM ('worker', 'requester');
-CREATE TABLE "user" (
+CREATE TABLE requester (
   id SERIAL PRIMARY KEY,
   email VARCHAR UNIQUE NOT NULL,
-  password VARCHAR NOT NULL,
-  type USER_TYPE
+  password VARCHAR NOT NULL
+);
+
+CREATE TABLE worker (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR UNIQUE NOT NULL,
+  password VARCHAR NOT NULL
 );
 
 CREATE TABLE campaign (
@@ -18,7 +18,7 @@ CREATE TABLE campaign (
   "start" TIMESTAMP NOT NULL,
   "end" TIMESTAMP NOT NULL,
   apply_end TIMESTAMP NOT NULL,
-  requester INTEGER REFERENCES "user"(id) ON DELETE SET NULL ON UPDATE CASCADE 
+  requester INTEGER REFERENCES requester(id) ON DELETE SET NULL ON UPDATE CASCADE 
 );
 
 CREATE TABLE task (
@@ -47,21 +47,21 @@ CREATE TABLE task_keyword (
 );
 
 CREATE TABLE worker_attitude (
-  worker INTEGER REFERENCES "user"(id) ON UPDATE CASCADE,
+  worker INTEGER REFERENCES worker(id) ON UPDATE CASCADE,
   keyword INTEGER REFERENCES keyword(id) ON UPDATE CASCADE,
   level INTEGER NOT NULL,
   PRIMARY KEY (worker, keyword)
 );
 
 CREATE TABLE worker_campaign (
-  worker INTEGER REFERENCES "user"(id) ON UPDATE CASCADE,
+  worker INTEGER REFERENCES worker(id) ON UPDATE CASCADE,
   campaign INTEGER REFERENCES campaign(id) ON UPDATE CASCADE,
   PRIMARY KEY (worker, campaign),
   score INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE worker_choice (
-  worker INTEGER REFERENCES "user"(id) ON UPDATE CASCADE,
+  worker INTEGER REFERENCES worker(id) ON UPDATE CASCADE,
   choice INTEGER REFERENCES choice(id) ON UPDATE CASCADE,
   PRIMARY KEY (worker, choice)
 );

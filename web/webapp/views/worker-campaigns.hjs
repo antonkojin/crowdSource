@@ -13,14 +13,17 @@
       {{/campaigns.applied}}
       </ul>
     </div>
-    <div id="other-campaigns">
+    <div id="appliable-campaigns">
       <h4>Apply to Campaign</h4>
       <ul>
         {{#campaigns.appliable}}
         {{!-- with javascript append handler to send POST request to apply to campaign --}}
-        <li><a href="">{{name}}</a></li> 
+        <li>
+          <button data-campaign-id={{id}}> {{name}} </button>
+        </li>
         {{/campaigns.appliable}}
       </ul>
     </div>
+    <script src="/js/worker-campaigns.js"></script>
   </body>
 </html>

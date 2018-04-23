@@ -99,7 +99,7 @@ router.post('/new-campaign', function (req, res) {
 
       const promises = req.body.tasks.map(async task => {
         const taskId = await insertTask(transaction, {
-          name: task.name,
+          name: task.title,
           context: task.context,
           campaign: campaignId
         });
@@ -115,7 +115,7 @@ router.post('/new-campaign', function (req, res) {
         const choicesPromise = insertChoices(transaction,
           task.choices.map(choice => ({
             name: choice.name,
-            value: choice.val,
+            value: choice.value,
             task: taskId
           }))
         );

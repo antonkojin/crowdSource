@@ -1,6 +1,7 @@
-INSERT INTO "user" (email, password, type) VALUES
-('requester@mail.test', 'a', 'worker'), -- id 1
-('worker@mail.test', 'a', 'requester'); -- id 2
+INSERT INTO requester (email, password) VALUES
+('requester@mail.test', 'a');
+INSERT INTO worker (email, password) VALUES
+('worker@mail.test', 'a');
 
 INSERT INTO campaign (name, majority_threshold, workers_per_task, "start", "end", apply_end, requester) VALUES
 (
@@ -75,10 +76,10 @@ INSERT INTO task_keyword (task, keyword) VALUES
 (3, 4), (3, 3), (3, 1);
 
 INSERT INTO worker_attitude (worker, keyword, level) VALUES
-(2, 1, 1),
-(2, 2, 2),
-(2, 3, 3),
-(2, 4, 4);
+(1, 1, 1),
+(1, 2, 2),
+(1, 3, 3),
+(1, 4, 4);
 
 INSERT INTO worker_campaign (worker, campaign) VALUES
-(2, 1);
+(1, 1);

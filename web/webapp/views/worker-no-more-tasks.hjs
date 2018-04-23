@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+  </head>
+  <body>
+      <h1>
+          No more tasks for you in this campaign
+      </h1>
+    <button onclick="window.location = '/worker/campaigns'">Back</button>
+  </body>
+</html>
