@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mustache = require('mustache-express4');
 
 var login = require('./routes/login');
 var signup = require('./routes/signup');
@@ -13,8 +14,10 @@ var requester = require('./routes/requester');
 var app = express();
 
 // view engine setup
+app.engine('mustache', mustache);
+app.set('view engine', 'mustache');
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hjs');
+app.set('partials', app.get('views'));
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

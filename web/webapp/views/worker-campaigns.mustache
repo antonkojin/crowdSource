@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
   </head>
   <body>
+    <header>
+      {{> login }}
+    </header>
     <div id="my-campaigns">
       <h4>Ongoing Campaigns</h4>
       <ul>
@@ -17,7 +20,6 @@
       <h4>Apply to Campaign</h4>
       <ul>
         {{#campaigns.appliable}}
-        {{!-- with javascript append handler to send POST request to apply to campaign --}}
         <li>
           <button data-campaign-id={{id}}> {{name}} </button>
         </li>
