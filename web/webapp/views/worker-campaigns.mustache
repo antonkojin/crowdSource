@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
   </head>
   <body>
-    <header>
-      {{> login }}
-    </header>
     <div id="my-campaigns">
       <h4>Ongoing Campaigns</h4>
       <ul>
@@ -26,6 +23,7 @@
         {{/campaigns.appliable}}
       </ul>
     </div>
+    {{> worker-reports}}
     <script src="/js/worker-campaigns.js"></script>
   </body>
 </html>

@@ -1,11 +1,8 @@
-var express = require('express');
-var router = express.Router();
+var router = require('express').Router();
 var db = require('../lib/db');
 
-router.get('/campaigns', async function (req, res, next) {
-  const workerId = 1; //TODO: authentication
-  try{
-    const appliable = await(db.db.any(`
+async function getAppliableAndAppliedCampagns(workerId) {
+  const appliable = await (db.db.any(`
       SELECT * FROM
       campaign
       WHERE apply_end > CURRENT_TIMESTAMP
@@ -17,9 +14,8 @@ router.get('/campaigns', async function (req, res, next) {
     `, {
       worker: workerId
     }));
-    console.log({appliable});
-    
-    const applied = await(db.db.any(`
+
+  const applied = await (db.db.any(`
       SELECT campaign.id, campaign.name FROM
       worker_campaign JOIN campaign
       ON campaign.id = worker_campaign.campaign
@@ -27,26 +23,55 @@ router.get('/campaigns', async function (req, res, next) {
     `, {
       worker: workerId
     }));
-    console.log({applied});
-    const campaigns = {applied, appliable};
-    res.render('worker-campaigns', {campaigns});
+  return { applied, appliable };
+};
+
+async function getReports(workerId) { //TODO
+  const queryArgs = { worker: workerId }
+  var result = await db.db.any(`
+    SELECT task.id AS task_id, campaign.name AS campaign_name,
+      task.name AS task_title, campaign.id AS campaign_id
+    FROM worker_choice JOIN choice
+      ON worker_choice.choice = choice.id
+    JOIN task
+      ON task.id = choice.task
+    JOIN campaign
+      ON campaign.id = task.campaign
+    GROUP BY (campaign.id, task.id);
+  `, queryArgs);
+  result = result.reduce((acc, curr) => {
+      let campaign = acc[curr.campaign_id] | {tasks: []};
+      campaign.tasks.push(curr.task);
+      acc[curr.campaign_id] = campaign;
+      return acc;
+    }, []);
+    console.log({result});
+    return result;
+};
+
+router.get('/campaigns', async function (req, res, next) {
+  const workerId = 1; //TODO: authentication
+  try {
+    const campaigns = await getAppliableAndAppliedCampagns(workerId);
+    const reports = await getReports(workerId);
+    res.render('worker-campaigns', { campaigns, reports });
   } catch (error) {
     console.error(error);
     res.send(500);
   }
 });
 
-router.post('/campaigns/apply/:campaignId', async function(req, res, next) {
+router.post('/campaigns/apply/:campaignId', async function (req, res, next) {
   const workerId = 1; //TODO: authentication
   const campaignId = req.params.campaignId;
-  try{
-    const result = await(db.db.none(`
+  try {
+    const result = await (db.db.none(`
       INSERT INTO worker_campaign (worker, campaign) VALUES
       (\${worker}, \${campaign});
     `, {
-      worker: workerId,
-      campaign: campaignId
-    }));
+        worker: workerId,
+        campaign: campaignId
+      }));
     res.sendStatus(200);
   } catch (error) {
     if (error.code == db.errorCodes.unique_violation) {
@@ -60,7 +85,7 @@ router.post('/campaigns/apply/:campaignId', async function(req, res, next) {
   }
 });
 
-router.get('/campaign/:campaignId/task', async function(req, res, next) {
+router.get('/campaign/:campaignId/task', async function (req, res, next) {
   const workerId = 1; //TODO: authentication
   const campaignId = req.params.campaignId;
   try {
@@ -93,9 +118,9 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
         FROM tasks_keywords_statistics
         ORDER BY sum DESC LIMIT 1
     ;`, {
-      worker: workerId,
-      campaign: campaignId
-    });
+        worker: workerId,
+        campaign: campaignId
+      });
     const taskId = resultTaskId.task;
 
     const resultTask = await db.db.one(`
@@ -103,16 +128,16 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
       FROM task
       WHERE id = \${task}
     `, {
-      task: taskId
-    });
+        task: taskId
+      });
 
     const resultChoices = await db.db.many(`
       SELECT id, name, value
       FROM choice
       WHERE task = \${task}
     `, {
-      task: taskId
-    });
+        task: taskId
+      });
     const choices = resultChoices.map(choice => {
       return {
         id: choice.id,
@@ -131,8 +156,8 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
       campaignId: campaignId
     };
     console.log(task);
-    
-    res.render('worker-task', {task: task});
+
+    res.render('worker-task', { task: task });
   } catch (error) {
     if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
       res.render('worker-no-more-tasks');
@@ -143,7 +168,7 @@ router.get('/campaign/:campaignId/task', async function(req, res, next) {
   }
 });
 
-router.post('/campaign/:campaignId/task/:taskId/choice/', async function(req, res, next) {
+router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, res, next) {
   const workerId = 1; //TODO: authentication
   const campaignId = req.params.campaignId;
   const taskId = req.params.taskId;
@@ -159,12 +184,12 @@ router.post('/campaign/:campaignId/task/:taskId/choice/', async function(req, re
         AND value = \${value}
       )
     `, {
-      worker: workerId,
-      task: taskId,
-      value: choiceValue
-    }));
+        worker: workerId,
+        task: taskId,
+        value: choiceValue
+      }));
 
-      res.redirect('/worker/campaigns');
+    res.redirect('/worker/campaigns');
   } catch (error) {
     if (error.code == db.errorCodes.unique_violation) {
       // res.location('/worker/campaigns').send();
