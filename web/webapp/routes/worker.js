@@ -1,5 +1,6 @@
 var router = require('express').Router();
 var db = require('../lib/db');
+const {inspect} = require('util');
 
 async function getAppliableAndAppliedCampagns(workerId) {
   const appliable = await (db.db.any(`
@@ -26,27 +27,46 @@ async function getAppliableAndAppliedCampagns(workerId) {
   return { applied, appliable };
 };
 
-async function getReports(workerId) { //TODO
+async function getReports(workerId) {
   const queryArgs = { worker: workerId }
-  var result = await db.db.any(`
-    SELECT task.id AS task_id, campaign.name AS campaign_name,
-      task.name AS task_title, campaign.id AS campaign_id
-    FROM worker_choice JOIN choice
-      ON worker_choice.choice = choice.id
-    JOIN task
-      ON task.id = choice.task
-    JOIN campaign
-      ON campaign.id = task.campaign
-    GROUP BY (campaign.id, task.id);
+  const result = await db.db.any(`
+    WITH executed_tasks AS (
+      SELECT campaign.name AS campaign_name,
+        campaign.id AS campaign_id,
+        COUNT(task.id) AS executed_tasks
+      FROM worker_choice LEFT JOIN choice
+        ON worker_choice.choice = choice.id
+      LEFT JOIN task
+        ON task.id = choice.task
+      LEFT JOIN campaign
+        ON campaign.id = task.campaign
+      WHERE worker_choice.worker = \${worker}
+      GROUP BY campaign.id
+    ), valid_tasks AS (
+      SELECT worker_campaign.campaign AS campaign_id,
+        worker_campaign.score AS valid_tasks
+      FROM worker_campaign
+      WHERE worker_campaign.worker = \${worker}
+    ), ranking AS (
+      SELECT worker_campaign.campaign AS campaign_id,
+        COUNT(worker_campaign.worker) + 1 AS ranking
+      FROM worker_campaign
+      WHERE worker <> \${worker}
+        AND worker_campaign.score > (
+          SELECT t.score FROM worker_campaign AS t WHERE t.worker = \${worker} AND t.campaign = worker_campaign.campaign
+        )
+      GROUP BY worker_campaign.campaign
+    ) SELECT e.campaign_id, e.campaign_name, e.executed_tasks,
+        v.valid_tasks, COALESCE(r.ranking, 1) AS ranking
+      FROM executed_tasks AS e
+      LEFT JOIN valid_tasks AS v ON e.campaign_id = v.campaign_id
+      LEFT JOIN ranking AS r on v.campaign_id = r.campaign_id
   `, queryArgs);
-  result = result.reduce((acc, curr) => {
-      let campaign = acc[curr.campaign_id] | {tasks: []};
-      campaign.tasks.push(curr.task);
-      acc[curr.campaign_id] = campaign;
-      return acc;
-    }, []);
-    console.log({result});
-    return result;
+    const campaignsReports = result;
+    console.log(inspect(campaignsReports, {depth:null}));
+    return {
+      campaigns: campaignsReports
+    };
 };
 
 router.get('/campaigns', async function (req, res, next) {
@@ -85,7 +105,7 @@ router.post('/campaigns/apply/:campaignId', async function (req, res, next) {
   }
 });
 
-router.get('/campaign/:campaignId/task', async function (req, res, next) {
+router.get('/campaign/:campaignId/task', async function (req, res, next) { //TODO: check workers per task
   const workerId = 1; //TODO: authentication
   const campaignId = req.params.campaignId;
   try {
@@ -93,13 +113,21 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
       WITH done_tasks AS (
         SELECT choice.task FROM
         worker_choice JOIN choice
-        ON worker_choice.choice = choice.id
-        WHERE worker_choice.worker = \${worker} 
+          ON worker_choice.choice = choice.id
+        JOIN task
+          ON choice.task = task.id
+        WHERE worker_choice.worker = \${worker}
+          AND task.campaign = \${campaign}
       ), tasks_keywords AS (
         SELECT task_keyword.task, task_keyword.keyword FROM
         task JOIN task_keyword
-        ON task.id = task_keyword.task
+          ON task.id = task_keyword.task
+        JOIN campaign
+          ON campaign.id = task.campaign
         WHERE task.campaign = \${campaign}
+          AND campaign.workers_per_task > (
+            SELECT COUNT(worker) FROM worker_choice JOIN choice ON worker_choice.choice = choice.id WHERE choice.task = task.id
+          )
         AND task.id NOT IN (SELECT * FROM done_tasks)
       ), worker_keywords AS (
         SELECT w.keyword, w.level FROM

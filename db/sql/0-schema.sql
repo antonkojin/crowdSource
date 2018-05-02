@@ -25,7 +25,8 @@ CREATE TABLE task (
   id SERIAL PRIMARY KEY,
   name VARCHAR NOT NULL,
   context VARCHAR NOT NULL,
-  campaign INTEGER REFERENCES campaign(id) ON DELETE SET NULL ON UPDATE CASCADE
+  campaign INTEGER REFERENCES campaign(id) ON DELETE SET NULL ON UPDATE CASCADE,
+  result INTEGER
 );
 
 CREATE TABLE choice (
@@ -34,6 +35,7 @@ CREATE TABLE choice (
   value VARCHAR NOT NULL,
   task INTEGER REFERENCES task(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
+ALTER TABLE task ADD CONSTRAINT task_result_fk FOREIGN KEY (result) REFERENCES choice(id);
 
 CREATE TABLE keyword (
   id SERIAL PRIMARY KEY,
@@ -46,7 +48,7 @@ CREATE TABLE task_keyword (
   PRIMARY KEY (task, keyword)
 );
 
-CREATE TABLE worker_attitude (
+CREATE TABLE worker_attitude ( -- TODO: check if task is valid and bla bla update score bla
   worker INTEGER REFERENCES worker(id) ON UPDATE CASCADE,
   keyword INTEGER REFERENCES keyword(id) ON UPDATE CASCADE,
   level INTEGER NOT NULL,
@@ -64,4 +66,5 @@ CREATE TABLE worker_choice (
   worker INTEGER REFERENCES worker(id) ON UPDATE CASCADE,
   choice INTEGER REFERENCES choice(id) ON UPDATE CASCADE,
   PRIMARY KEY (worker, choice)
+  -- TODO: unique(worker, choice.task) constraint
 );

@@ -1,3 +1,9 @@
 <div id="reports">
-    <h4>Reports</h4>
+  <h4>Campaigns reports</h4>
+  {{#reports.campaigns}}
+    <h5>Campaign: {{campaign_name}}</h5>
+    <p>executed tasks: {{executed_tasks}}</p>
+    <p>valid tasks: {{valid_tasks}}</p>
+    <p>Ranking: {{ranking}}</p>
+  {{/reports.campaigns}}
 </div>

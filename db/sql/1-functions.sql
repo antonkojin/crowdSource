@@ -17,12 +17,30 @@
 -- END;
 -- $$ LANGUAGE 'plpgsql';
 
-CREATE FUNCTION get_task_for_worker(worker_id INTEGER, campaign_id INTEGER)
-RETURNS VOID
-AS $$
-DECLARE
-  -- EMPTY
-BEGIN
-  
-END
-$$ LANGUAGE 'plpgsql';
+
+
+-- numero di task validi correttamente eseguiti, cioè task per i quali valgono le seguenti condizioni:
+--   - il task è stato eseguito dal lavoratore
+--   - il task ha un risultato finale (è stata raggiunta la maggioranza richiesta)
+--   - eseguendo il task, la risposta fornita dal lavoratore coincide con il risultato del task,
+--     cioè il lavoratore appartiene alla maggioranza che ha determinato il risultato del task.
+CREATE FUNCTION end_task(task_id INTEGER) -- triggers on insert in worker_choice when workers_per_task in campaign is reached
+RETURNS INTEGER AS $$
+  WITH votes AS (
+    SELECT choice.id AS choice_id,
+      COUNT(worker_choice.worker) AS votes
+    FROM worker_choice RIGHT JOIN choice
+      ON worker_choice.choice = choice.id
+    RIGHT JOIN task
+      ON task.id = choice.task
+    JOIN campaign
+      ON campaign.id = task.campaign
+    WHERE task.id = 1 -- task_id
+    GROUP BY (campaign.id, task.id, choice.id)
+    HAVING COUNT(worker_choice.worker) >= campaign.majority_threshold
+  ) SELECT v1.choice_id
+    FROM votes AS v1 WHERE v1.votes = (
+      SELECT MAX(v2.votes) FROM votes AS v2
+    ); -- if has one and only one row then the task has majority, else not
+  SELECT 0;
+$$ LANGUAGE 'sql';

@@ -66,6 +66,8 @@ const onLoad = (() => {
       .then(response => {
         if (response.status == 200) {
           window.location = 'campaigns';
+        } else {
+          window.alert('You did a mistake');
         }
       })
       .catch(error => console.log(error));
