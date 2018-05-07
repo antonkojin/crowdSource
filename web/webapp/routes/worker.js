@@ -105,11 +105,11 @@ router.post('/campaigns/apply/:campaignId', async function (req, res, next) {
   }
 });
 
-router.get('/campaign/:campaignId/task', async function (req, res, next) { //TODO: check workers per task
+router.get('/campaign/:campaignId/task', async function (req, res, next) {
   const workerId = 1; //TODO: authentication
   const campaignId = req.params.campaignId;
   try {
-    const resultTaskId = await db.db.one(` 
+    const resultTaskId = await db.db.one(`
       WITH done_tasks AS (
         SELECT choice.task FROM
         worker_choice JOIN choice
@@ -119,12 +119,16 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) { //TOD
         WHERE worker_choice.worker = \${worker}
           AND task.campaign = \${campaign}
       ), tasks_keywords AS (
-        SELECT task_keyword.task, task_keyword.keyword FROM
-        task JOIN task_keyword
+        -- only if  workerker applied to the campaign
+        SELECT task.id AS task, task_keyword.keyword FROM
+        task LEFT JOIN task_keyword
           ON task.id = task_keyword.task
         JOIN campaign
           ON campaign.id = task.campaign
+        JOIN worker_campaign
+          ON worker_campaign.campaign = \${campaign}
         WHERE task.campaign = \${campaign}
+          AND worker_campaign.worker = \${worker}
           AND campaign.workers_per_task > (
             SELECT COUNT(worker) FROM worker_choice JOIN choice ON worker_choice.choice = choice.id WHERE choice.task = task.id
           )
@@ -206,13 +210,19 @@ router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, r
     await (db.db.none(`
       INSERT INTO worker_choice (worker, choice)
       (
-        SELECT \${worker}, choice.id
-        FROM choice
-        WHERE task = \${task}
-        AND value = \${value}
+        SELECT \${worker}, choice.id FROM
+        choice JOIN task
+          ON task.id = choice.task
+        JOIN worker_campaign
+          ON task.campaign = worker_campaign.campaign 
+        WHERE task.id = \${task}
+        AND task.campaign = \${campaign}
+        AND worker_campaign.worker = \${worker}
+        AND choice.value = \${value}
       )
     `, {
         worker: workerId,
+        campaign: campaignId,
         task: taskId,
         value: choiceValue
       }));
@@ -220,7 +230,6 @@ router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, r
     res.redirect('/worker/campaigns');
   } catch (error) {
     if (error.code == db.errorCodes.unique_violation) {
-      // res.location('/worker/campaigns').send();
       res.redirect('/worker/campaigns');
     } else {
       console.error(error);

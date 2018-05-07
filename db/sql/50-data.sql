@@ -7,8 +7,8 @@ INSERT INTO worker (email, password) VALUES
 INSERT INTO campaign (name, majority_threshold, workers_per_task, "start", "end", apply_end, requester) VALUES
 (
     'test_campaign_1',
-    '1',
-    '1',
+    '2',
+    '2',
     '2018-10-10 12:00',
     '2018-10-30 24:00',
     '2018-10-09 24:00',
@@ -45,15 +45,15 @@ INSERT INTO task (name, context, campaign) VALUES
 ),(
     'task test 3',
     'select the correct answer',
-    1
+    2
 ),(
     'task test 4',
     'select the correct answer',
-    2
+    3
 ),(
     'task test 5',
     'select the correct answer',
-    2
+    3
 );
 
 INSERT INTO choice (name, value, task) VALUES
@@ -96,26 +96,7 @@ INSERT INTO worker_attitude (worker, keyword, level) VALUES
 
 INSERT INTO worker_campaign (worker, campaign) VALUES
 (1, 1),
-(1, 2),
 (2, 1);
 
-INSERT INTO worker_choice (worker, choice) VALUES
-(1, 1),
--- (1, 5),
-(1, 14),
-(2, 2);
-
-UPDATE task SET
-result = 1 WHERE id = 1;
-UPDATE task SET
-result = 5 WHERE id = 2;
-UPDATE task SET
-result = 14 WHERE id = 5;
-
-UPDATE worker_campaign SET
-score = score + 2
-WHERE worker = 1 AND campaign = 1;
-
-UPDATE worker_campaign SET
-score = score + 1
-WHERE worker = 1 AND campaign = 2;
+-- INSERT INTO worker_choice (worker, choice) VALUES
+-- (2, 2);
