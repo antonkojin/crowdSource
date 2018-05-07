@@ -206,11 +206,10 @@ router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, r
   const taskId = req.params.taskId;
   const choiceValue = req.body.choice;
   try {
-    //TODO: check choice is in task and task is in campaign for worker
-    await (db.db.none(`
+    await (db.db.one(`
       INSERT INTO worker_choice (worker, choice)
       (
-        SELECT \${worker}, choice.id FROM
+        SELECT worker_campaign.worker, choice.id FROM
         choice JOIN task
           ON task.id = choice.task
         JOIN worker_campaign
@@ -219,7 +218,12 @@ router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, r
         AND task.campaign = \${campaign}
         AND worker_campaign.worker = \${worker}
         AND choice.value = \${value}
-      )
+        AND task.id NOT IN (
+          SELECT choice.task FROM
+          worker_choice JOIN choice ON choice.id = worker_choice.choice
+          WHERE worker = \${worker}
+        )
+      ) RETURNING *
     `, {
         worker: workerId,
         campaign: campaignId,
@@ -231,6 +235,8 @@ router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, r
   } catch (error) {
     if (error.code == db.errorCodes.unique_violation) {
       res.redirect('/worker/campaigns');
+    } else if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
+      res.sendStatus(400);
     } else {
       console.error(error);
       res.sendStatus(500);
