@@ -135,12 +135,86 @@ router.post('/new-campaign', function (req, res) {
   });
 });
 
-router.get('/:campaignId/report', function (req, res, next) {
-  res.render('requester-campaign-report', { campaignId: req.params.campaignId });
+router.get('/campaigns', async function (req, res, next) {
+  const requesterId = 1; // TODO: auth
+  try {
+    const campaigns = await db.db.any(`
+    SELECT id, name FROM campaign WHERE requester = \${requester}
+    `, {
+      requester: requesterId
+    });
+    console.log({campaigns});
+    res.render('requester-campaigns', {campaigns});
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
 });
 
-router.get('/campaigns', function (req, res, next) {
-  res.render('requester-campaigns');
+router.get('/report/:campaignId', async function (req, res, next) {
+  const requesterId = 1; //TODO auth
+  const campaignId = req.params.campaignId;
+  try {
+    // name, id, completed, ongoing, valid/executed, tasks with result if any 
+    const campaignName = await db.db.one(`
+      SELECT name FROM campaign WHERE id = \${campaign} AND requester = \${requester}
+    `, {
+      campaign: campaignId,
+      requester: requesterId
+    });
+    
+    const tasksReports = await db.db.any(`
+      SELECT id, name AS title, result FROM task WHERE task.campaign = \${campaign}
+    `, {
+      campaign: campaignId
+    });
+
+    const completedAndOngoingTasks = await db.db.one(`
+      SELECT COUNT(result) AS completed_tasks,
+        COUNT(*) - COUNT(result) AS ongoing_tasks
+        FROM task
+        WHERE campaign = \${campaign}
+    `, {
+      campaign: campaignId
+    });
+
+    const validTasks = await db.db.one(`
+      SELECT COUNT(*) AS valid_tasks
+      FROM task
+      WHERE campaign = \${campaign}
+      AND result > 0
+    `, {
+      campaign: campaignId
+    });
+
+    //TODO: random solution
+    const topTenWorkers = await db.db.any(`
+      WITH worker_score AS (
+        SELECT id, email, RANDOM() * (10 - 1) + 1 AS score
+        FROM worker
+      ) SELECT id, email
+      FROM worker_score
+      ORDER BY score DESC
+      LIMIT 10
+    `, {
+      campaign: campaignId
+    });
+
+    const viewArgs = {
+      id: campaignId,
+      name: campaignName.name,
+      completedTasks: completedAndOngoingTasks.completed_tasks,
+      ongoingTasks: completedAndOngoingTasks.ongoing_tasks,
+      validExecutedRate: validTasks.valid_tasks / completedAndOngoingTasks.completed_tasks,
+      tasks: tasksReports,
+      topTenWorkers: topTenWorkers
+    };
+    console.log(viewArgs);
+    res.render('requester-campaign-report', viewArgs);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
 });
 
 module.exports = router;
