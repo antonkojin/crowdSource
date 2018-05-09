@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-docker-compose down --volumes &&
-# docker-compose up -d --build --force-recreate db
-docker-compose up -d --force-recreate db web &&
+docker-compose kill db &&
+docker rm progettodb_db_1 --volumes &&
+docker-compose up -d db &&
 docker-compose logs --follow
