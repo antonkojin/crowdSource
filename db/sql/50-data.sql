@@ -98,5 +98,6 @@ INSERT INTO worker_campaign (worker, campaign) VALUES
 (1, 1),
 (2, 1);
 
--- INSERT INTO worker_choice (worker, choice) VALUES
--- (2, 2);
+INSERT INTO worker_choice (worker, choice) VALUES
+(2, 1),
+(2, 4);

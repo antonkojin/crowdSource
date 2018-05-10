@@ -3,28 +3,50 @@
 --   - il task ha un risultato finale (è stata raggiunta la maggioranza richiesta)
 --   - eseguendo il task, la risposta fornita dal lavoratore coincide con il risultato del task,
 --     cioè il lavoratore appartiene alla maggioranza che ha determinato il risultato del task.
-CREATE FUNCTION end_task(task_id INTEGER) -- triggers on insert in worker_choice when workers_per_task in campaign is reached
-RETURNS VOID AS $$
+CREATE FUNCTION complete_task() -- triggers on insert in worker_choice when workers_per_task in campaign is reached
+RETURNS TRIGGER AS $$
 DECLARE
-  majority_choice INTEGER;
+  task_id INTEGER;
+  workers_per_task INTEGER;
+  isCompleted BOOLEAN;
+  majorityChoice INTEGER;
 BEGIN
-  WITH votes AS (
-    SELECT choice.id AS choice_id,
-      COUNT(worker_choice.worker) AS votes
-    FROM worker_choice RIGHT JOIN choice
-      ON worker_choice.choice = choice.id
-    RIGHT JOIN task
-      ON task.id = choice.task
-    JOIN campaign
-      ON campaign.id = task.campaign
-    WHERE task.id = task_id -- task_id
-    GROUP BY (campaign.id, task.id, choice.id)
-    HAVING COUNT(worker_choice.worker) >= campaign.majority_threshold
-  ) SELECT v1.choice_id INTO STRICT majority_choice FROM votes AS v1 WHERE v1.votes = (
-    SELECT MAX(v2.votes) FROM votes AS v2
+  task_id := (SELECT task FROM choice WHERE id = NEW.choice);
+  workers_per_task := (SELECT campaign.workers_per_task FROM task JOIN campaign ON task.campaign = campaign.id WHERE task.id = task_id);
+  isCompleted := (
+    SELECT COUNT(*) >= workers_per_task
+    FROM worker_choice JOIN choice
+    ON worker_choice.choice = choice.id
+    WHERE choice.task = task_id
   );
-  UPDATE task SET result = majority_choice WHERE id = task_id;
+  -- only one MAX(COUNT(workers for each choice of task))
+  IF NOT isCompleted THEN RETURN NULL; END IF;
+  WITH votes AS (
+    SELECT choice.id AS choice_id, COUNT(worker_choice.worker) AS votes FROM
+    worker_choice JOIN choice ON choice.id = worker_choice.choice
+    WHERE choice.task = task_id
+    GROUP BY choice.id
+  ) SELECT votes.choice_id
+    INTO STRICT majorityChoice
+    FROM votes
+    WHERE votes.votes = (
+      SELECT MAX(v2.votes) FROM votes AS v2
+    );
+  UPDATE task SET result = majorityChoice WHERE id = task_id; -- update task result
+  UPDATE worker_campaign SET score = score + 1 -- update worker score
+  FROM worker_choice LEFT JOIN choice ON choice.id = worker_choice.choice
+  LEFT JOIN task ON task.id = choice.task
+  WHERE worker_choice.choice = majorityChoice
+  AND worker_campaign.campaign = task.campaign
+  ;
+  RETURN NULL;
 EXCEPTION WHEN too_many_rows THEN
-  UPDATE task SET result = NULL WHERE id = task_id;
+  UPDATE task SET result = 0 WHERE id = task_id;
+  RETURN NULL;
 END;
 $$ LANGUAGE 'plpgsql';
+
+CREATE TRIGGER complete_task
+AFTER INSERT ON worker_choice
+FOR EACH ROW
+EXECUTE PROCEDURE complete_task();
