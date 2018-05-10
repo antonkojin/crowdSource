@@ -8,9 +8,9 @@
     <div id="my-campaigns">
       <h4>Ongoing Campaigns</h4>
       <ul>
-      {{#campaigns.applied}}
+      {{#campaigns.ongoing}}
         <li><a href="/worker/campaign/{{id}}/task">{{name}}</a></li>
-      {{/campaigns.applied}}
+      {{/campaigns.ongoing}}
       </ul>
     </div>
     <div id="appliable-campaigns">
@@ -23,7 +23,22 @@
         {{/campaigns.appliable}}
       </ul>
     </div>
+    <div id="completed-campaigns">
+      <h4>Completed Campaigns</h4>
+      <ul>
+      {{#campaigns.completed}}
+        <li><p>{{name}}</p></li>
+      {{/campaigns.completed}}
+      </ul>
+    </div>
     {{> worker-reports}}
     <script src="/js/worker-campaigns.js"></script>
+    <style>
+      div {
+        border: solid 1px black;
+        margin: 5px;
+        padding: 5px;
+      }
+    </style>
   </body>
 </html>

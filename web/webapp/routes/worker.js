@@ -2,29 +2,50 @@ var router = require('express').Router();
 var db = require('../lib/db');
 const {inspect} = require('util');
 
-async function getAppliableAndAppliedCampagns(workerId) {
+async function getAppliableOngoingAndCompletedCampagns(workerId) {
   const appliable = await (db.db.any(`
-      SELECT * FROM
-      campaign
-      WHERE apply_end > CURRENT_TIMESTAMP
-      AND id NOT IN (
-        SELECT campaign FROM
-        worker_campaign
-        WHERE worker = $\{worker} 
-      )
-    `, {
-      worker: workerId
-    }));
+    SELECT * FROM
+    campaign
+    WHERE apply_end > CURRENT_TIMESTAMP
+    AND id NOT IN (
+      SELECT campaign FROM
+      worker_campaign
+      WHERE worker = $\{worker} 
+    )
+  `, {
+    worker: workerId
+  }));
 
   const applied = await (db.db.any(`
-      SELECT campaign.id, campaign.name FROM
-      worker_campaign JOIN campaign
-      ON campaign.id = worker_campaign.campaign
-      WHERE worker_campaign.worker = \${worker};
-    `, {
-      worker: workerId
-    }));
-  return { applied, appliable };
+    SELECT campaign.id, campaign.name FROM
+    worker_campaign JOIN campaign
+    ON campaign.id = worker_campaign.campaign
+    WHERE worker_campaign.worker = \${worker};
+  `, {
+    worker: workerId
+  }));
+
+  const ongoing = await (db.db.any(`
+    WITH completed_tasks AS (
+      SELECT task.id, task.campaign
+      FROM worker_choice 
+      JOIN choice ON choice.id = worker_choice.choice
+      JOIN task ON task.id = choice.task
+      WHERE worker_choice.worker = \${worker}
+    ) SELECT campaign.id, campaign.name
+      FROM campaign
+      JOIN task ON task.campaign = campaign.id
+      JOIN worker_campaign ON worker_campaign.campaign = campaign.id
+      WHERE task.id NOT IN (SELECT id FROM completed_tasks)
+      AND worker_campaign.worker = \${worker}
+      GROUP BY campaign.id
+  `, {
+    worker: workerId
+  }));
+  console.log(ongoing);
+  // completed = applied - ongoing
+  const completed = applied.filter(a => ongoing.reduce((notContains, o) => notContains && !(a.id == o.id), true));
+  return { completed, appliable, ongoing };
 };
 
 async function getReports(workerId) {
@@ -63,7 +84,6 @@ async function getReports(workerId) {
       LEFT JOIN ranking AS r on v.campaign_id = r.campaign_id
   `, queryArgs);
     const campaignsReports = result;
-    console.log(inspect(campaignsReports, {depth:null}));
     return {
       campaigns: campaignsReports
     };
@@ -72,12 +92,12 @@ async function getReports(workerId) {
 router.get('/campaigns', async function (req, res, next) {
   const workerId = 1; //TODO: authentication
   try {
-    const campaigns = await getAppliableAndAppliedCampagns(workerId);
+    const campaigns = await getAppliableOngoingAndCompletedCampagns(workerId);
     const reports = await getReports(workerId);
     res.render('worker-campaigns', { campaigns, reports });
   } catch (error) {
     console.error(error);
-    res.send(500);
+    res.sendStatus(500);
   }
 });
 

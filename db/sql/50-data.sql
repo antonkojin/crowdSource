@@ -56,6 +56,7 @@ INSERT INTO task (name, context, campaign) VALUES
     3
 );
 
+INSERT INTO choice (id, name, value, task) VALUES (0, '', '', NULL);
 INSERT INTO choice (name, value, task) VALUES
 ('positive', 1, 1),
 ('neutral', 0, 1),
@@ -95,7 +96,6 @@ INSERT INTO worker_attitude (worker, keyword, level) VALUES
 (1, 4, 4);
 
 INSERT INTO worker_campaign (worker, campaign) VALUES
-(1, 1),
 (2, 1);
 
 INSERT INTO worker_choice (worker, choice) VALUES
