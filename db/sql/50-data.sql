@@ -96,8 +96,10 @@ INSERT INTO worker_attitude (worker, keyword, level) VALUES
 (1, 4, 4);
 
 INSERT INTO worker_campaign (worker, campaign) VALUES
-(2, 1);
+(2, 1),
+(2, 3);
 
 INSERT INTO worker_choice (worker, choice) VALUES
 (2, 1),
-(2, 4);
+(2, 4),
+(2, 15);

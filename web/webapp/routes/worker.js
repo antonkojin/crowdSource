@@ -27,11 +27,13 @@ async function getAppliableOngoingAndCompletedCampagns(workerId) {
 
   const ongoing = await (db.db.any(`
     WITH completed_tasks AS (
-      SELECT task.id, task.campaign
-      FROM worker_choice 
+      SELECT task.id
+      FROM worker_choice
       JOIN choice ON choice.id = worker_choice.choice
       JOIN task ON task.id = choice.task
-      WHERE worker_choice.worker = \${worker}
+      JOIN campaign ON campaign.id = task.campaign
+      GROUP BY task.id, campaign.workers_per_task
+      HAVING COUNT(worker_choice.worker) >= campaign.workers_per_task
     ) SELECT campaign.id, campaign.name
       FROM campaign
       JOIN task ON task.campaign = campaign.id
@@ -65,8 +67,10 @@ async function getReports(workerId) {
       GROUP BY campaign.id
     ), valid_tasks AS (
       SELECT worker_campaign.campaign AS campaign_id,
-        worker_campaign.score AS valid_tasks
+        worker_campaign.score AS valid_tasks,
+        campaign.name AS campaign_name
       FROM worker_campaign
+      JOIN campaign ON worker_campaign.campaign = campaign.id
       WHERE worker_campaign.worker = \${worker}
     ), ranking AS (
       SELECT worker_campaign.campaign AS campaign_id,
@@ -77,11 +81,13 @@ async function getReports(workerId) {
           SELECT t.score FROM worker_campaign AS t WHERE t.worker = \${worker} AND t.campaign = worker_campaign.campaign
         )
       GROUP BY worker_campaign.campaign
-    ) SELECT e.campaign_id, e.campaign_name, e.executed_tasks,
-        v.valid_tasks, COALESCE(r.ranking, 1) AS ranking
-      FROM executed_tasks AS e
-      LEFT JOIN valid_tasks AS v ON e.campaign_id = v.campaign_id
-      LEFT JOIN ranking AS r on v.campaign_id = r.campaign_id
+    ) SELECT v.campaign_id, v.campaign_name,
+      COALESCE(e.executed_tasks, 0) AS executed_tasks,
+      COALESCE(v.valid_tasks, 0) AS valid_tasks,
+      COALESCE(r.ranking, 1) AS ranking
+      FROM valid_tasks AS v
+      LEFT JOIN executed_tasks AS e ON v.campaign_id = e.campaign_id
+      LEFT JOIN ranking AS r ON r.campaign_id = e.campaign_id
   `, queryArgs);
     const campaignsReports = result;
     return {

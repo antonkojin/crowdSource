@@ -187,14 +187,12 @@ router.get('/report/:campaignId', async function (req, res, next) {
       campaign: campaignId
     });
 
-    //TODO: random solution
     const topTenWorkers = await db.db.any(`
-      WITH worker_score AS (
-        SELECT id, email, RANDOM() * (10 - 1) + 1 AS score
-        FROM worker
-      ) SELECT id, email
-      FROM worker_score
-      ORDER BY score DESC
+      SELECT w.id, w.email, wc.score
+      FROM worker AS w
+      JOIN worker_campaign AS wc ON wc.worker = w.id
+      WHERE wc.campaign = \${campaign}
+      ORDER BY wc.score DESC
       LIMIT 10
     `, {
       campaign: campaignId
@@ -205,7 +203,7 @@ router.get('/report/:campaignId', async function (req, res, next) {
       name: campaignName.name,
       completedTasks: completedAndOngoingTasks.completed_tasks,
       ongoingTasks: completedAndOngoingTasks.ongoing_tasks,
-      validExecutedRate: validTasks.valid_tasks / completedAndOngoingTasks.completed_tasks,
+      validTasks: validTasks.valid_tasks,
       tasks: tasksReports,
       topTenWorkers: topTenWorkers
     };
