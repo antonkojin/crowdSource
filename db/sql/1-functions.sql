@@ -21,6 +21,7 @@ BEGIN
   );
   -- only one MAX(COUNT(workers for each choice of task))
   IF NOT isCompleted THEN RETURN NULL; END IF;
+
   WITH votes AS (
     SELECT choice.id AS choice_id, COUNT(worker_choice.worker) AS votes FROM
     worker_choice JOIN choice ON choice.id = worker_choice.choice
@@ -33,15 +34,37 @@ BEGIN
       SELECT MAX(v2.votes) FROM votes AS v2
     );
   UPDATE task SET result = majorityChoice WHERE id = task_id; -- update task result
+
   UPDATE worker_campaign SET score = score + 1 -- update worker score
   FROM worker_choice LEFT JOIN choice ON choice.id = worker_choice.choice
   LEFT JOIN task ON task.id = choice.task
   WHERE worker_choice.choice = majorityChoice
-  AND worker_campaign.campaign = task.campaign
-  ;
+  AND worker_campaign.campaign = task.campaign;
+
+  UPDATE worker_attitude SET level = level + 1
+  WHERE ROW(worker, keyword) IN (
+    SELECT wc.worker, tk.keyword
+    FROM worker_choice AS wc
+    JOIN choice AS c ON c.id = wc.choice
+    JOIN task_keyword AS tk ON tk.task = c.task
+    WHERE wc.choice = majorityChoice
+    AND c.task = task_id
+    GROUP BY (wc.worker, tk.keyword)
+  );
   RETURN NULL;
 EXCEPTION WHEN too_many_rows THEN
   UPDATE task SET result = 0 WHERE id = task_id;
+
+  UPDATE worker_attitude SET level = GREATEST(level - 1, 1)
+  WHERE ROW(worker, keyword) IN (
+    SELECT wc.worker, tk.keyword
+    FROM worker_choice AS wc
+    JOIN choice AS c ON c.id = wc.choice
+    JOIN task_keyword AS tk ON tk.task = c.task
+    WHERE wc.choice != majorityChoice
+    AND c.task = task_id
+    GROUP BY (wc.worker, tk.keyword)
+  );
   RETURN NULL;
 END;
 $$ LANGUAGE 'plpgsql';
