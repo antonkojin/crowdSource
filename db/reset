@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
 docker-compose kill db &&
-docker rm progettodb_db_1 --volumes &&
+docker rm progettodb_db_1 --volumes;
 docker-compose up -d db &&
 docker-compose logs --follow
