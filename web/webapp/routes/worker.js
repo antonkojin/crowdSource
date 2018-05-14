@@ -226,7 +226,7 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
   }
 });
 
-router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, res, next) {
+  router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, res, next) {
   const workerId = 1; //TODO: authentication
   const campaignId = req.params.campaignId;
   const taskId = req.params.taskId;
@@ -261,7 +261,7 @@ router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, r
   } catch (error) {
     if (error.code == db.errorCodes.unique_violation) {
       res.redirect('/worker/campaigns');
-    } else if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
+    } else if (error.code == db.errorCodes.queryResultErrorCodes.noData) { // not a valid choice, not valid campaign, not valid task
       res.sendStatus(400);
     } else {
       console.error(error);

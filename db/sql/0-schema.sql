@@ -48,7 +48,7 @@ CREATE TABLE task_keyword (
   PRIMARY KEY (task, keyword)
 );
 
-CREATE TABLE worker_attitude ( -- TODO: check if task is valid and bla bla update score bla
+CREATE TABLE worker_attitude (
   worker INTEGER REFERENCES worker(id) ON UPDATE CASCADE,
   keyword INTEGER REFERENCES keyword(id) ON UPDATE CASCADE,
   level INTEGER NOT NULL DEFAULT 1,

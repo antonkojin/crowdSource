@@ -4,7 +4,6 @@
      const renderTasks = () => {
          const taskTemplate = document.getElementById('task-template').cloneNode(true);
          taskTemplate.getElementByClassName('task-title')[0].innerText
-         //TODO
          taskTemplate.hidden = false;
      };
 
