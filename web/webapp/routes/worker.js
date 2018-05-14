@@ -178,7 +178,8 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
     ;`, {
         worker: workerId,
         campaign: campaignId
-      });
+      }
+    );
     const taskId = resultTaskId.task;
 
     const resultTask = await db.db.one(`
@@ -187,7 +188,8 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
       WHERE id = \${task}
     `, {
         task: taskId
-      });
+      }
+    );
 
     const resultChoices = await db.db.many(`
       SELECT id, name, value
@@ -195,7 +197,8 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
       WHERE task = \${task}
     `, {
         task: taskId
-      });
+      }
+    );
     const choices = resultChoices.map(choice => {
       return {
         id: choice.id,
@@ -226,7 +229,7 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
   }
 });
 
-  router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, res, next) {
+router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, res, next) {
   const workerId = 1; //TODO: authentication
   const campaignId = req.params.campaignId;
   const taskId = req.params.taskId;
