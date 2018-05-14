@@ -38,10 +38,11 @@ BEGIN
   UPDATE task SET result = majorityChoice WHERE id = task_id; -- update task result
 
   UPDATE worker_campaign SET score = score + 1 -- update worker score
-  FROM worker_choice LEFT JOIN choice ON choice.id = worker_choice.choice
-  LEFT JOIN task ON task.id = choice.task
+  FROM worker_choice JOIN choice ON choice.id = worker_choice.choice
+  JOIN task ON task.id = choice.task
   WHERE worker_choice.choice = majorityChoice
-  AND worker_campaign.campaign = task.campaign;
+  AND worker_campaign.campaign = task.campaign
+  AND worker_campaign.worker = worker_choice.worker;
 
   FOR worker_keyword IN ( -- workers to level up
     SELECT wc.worker, tk.keyword
