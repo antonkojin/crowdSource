@@ -77,10 +77,10 @@ BEGIN
     AND c.task = task_id
     GROUP BY (wc.worker, tk.keyword)
   ) LOOP
-    -- TODO: maybe if level is 0 remove the keyword, it's more coherent
-    UPDATE worker_attitude SET level = GREATEST(level - 1, 1)
+    UPDATE worker_attitude SET level = GREATEST(level - 1, 0)
     WHERE worker = worker_keyword.worker
     AND keyword = worker_keyword.keyword;
+    DELETE FROM worker_attitude WHERE level = 0;
   END LOOP;
   RETURN NULL;
 EXCEPTION WHEN too_many_rows THEN -- if there is no majority
