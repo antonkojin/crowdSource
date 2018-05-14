@@ -1,5 +1,7 @@
++ signup
+- auth
 requesters:
-    - signup with approval of the admin
+    - approval of the admin
     + campaign creation (with name) (non db)
         + tasks
             + context
@@ -15,7 +17,6 @@ requesters:
         + top 10 workers (with ranking) for campaign
 
 workers:
-    + signup
     - profile definition (ex: [musica: 10, arte: 7])
     + view campaigns and apply new campaign
         + tasks request and execution for a campaign

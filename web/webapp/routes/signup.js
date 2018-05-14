@@ -1,16 +1,20 @@
 var express = require('express');
 var router = express.Router();
 const db = require('../lib/db');
-var { inspect } = require('util');
 
 router.get('/', function (req, res) {
   res.render('signup');
 });
 
 router.post('/', function (req, res) {
+  if (!['worker', 'requester'].includes(req.body.user)) return res.sendStatus(400); 
   db.db.none(
-    'INSERT INTO "user" (email, password) VALUES ($1, $2);',
-    [req.body.email, req.body.password]
+    'INSERT INTO "${userType:raw}" (email, password) VALUES (${email}, ${password});',
+    {
+      email: req.body.email,
+      password: req.body.password,
+      userType: req.body.user
+    }
   ).then(() => {
     res.send('SIGNED UP');
   }).catch(error => {
