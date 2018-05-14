@@ -2,13 +2,14 @@ INSERT INTO requester (email, password) VALUES
 ('requester@mail.test', 'a');
 INSERT INTO worker (email, password) VALUES
 ('worker@mail.test', 'a'),
-('worker2@mail.test', 'a');
+('worker2@mail.test', 'a'),
+('worker3@mail.test', 'a');
 
 INSERT INTO campaign (name, majority_threshold, workers_per_task, "start", "end", apply_end, requester) VALUES
 (
     'test_campaign_1',
-    '2',
-    '2',
+    '3',
+    '3',
     '2018-10-10 12:00',
     '2018-10-30 24:00',
     '2018-10-09 24:00',
@@ -16,17 +17,17 @@ INSERT INTO campaign (name, majority_threshold, workers_per_task, "start", "end"
 ),
 (
     'test_campaign_2',
-    '1',
-    '1',
+    '2',
+    '2',
     '2018-10-10 12:00',
     '2018-10-30 24:00',
-    '2018-04-01 24:00',
+    '2018-10-01 24:00',
     1    
 ),
 (
     'test_campaign_3',
-    '1',
-    '1',
+    '2',
+    '2',
     '2018-10-10 12:00',
     '2018-10-30 24:00',
     '2018-10-09 24:00',
@@ -85,28 +86,29 @@ INSERT INTO keyword (description) VALUES
 ('sentiment analisys'); -- id 4
 
 INSERT INTO task_keyword (task, keyword) VALUES
-(1, 2), (1, 4),
-(2, 4), (2, 1),
-(3, 4), (3, 3), (3, 1),
-(4, 4), (4, 3), (4, 1),
-(5, 4), (5, 3), (5, 2), (5, 1);
+(1, 1), (1, 2),
+(2, 1), (2, 2),
+(3, 1), (3, 2),
+(4, 1), (4, 2),
+(5, 1), (5, 2);
 
 INSERT INTO worker_attitude (worker, keyword, level) VALUES
 (1, 1, 1),
-(1, 2, 1),
-(1, 3, 1),
-(1, 4, 1),
-
-(2, 1, 1),
-(2, 2, 1),
-(2, 3, 1),
-(2, 4, 1);
+(2, 2, 1);
 
 INSERT INTO worker_campaign (worker, campaign) VALUES
 (2, 1),
-(2, 3);
+(2, 2),
+(2, 3),
+(3, 1),
+(3, 2),
+(3, 3);
 
 INSERT INTO worker_choice (worker, choice) VALUES
 (2, 1),
+(3, 1),
 (2, 4),
-(2, 15);
+(3, 4),
+(2, 7),
+(2, 10),
+(2, 13);

@@ -10,6 +10,7 @@ DECLARE
   workers_per_task INTEGER;
   isCompleted BOOLEAN;
   majorityChoice INTEGER;
+  worker_keyword RECORD;
 BEGIN
   task_id := (SELECT task FROM choice WHERE id = NEW.choice);
   workers_per_task := (SELECT campaign.workers_per_task FROM task JOIN campaign ON task.campaign = campaign.id WHERE task.id = task_id);
@@ -33,6 +34,7 @@ BEGIN
     WHERE votes.votes = (
       SELECT MAX(v2.votes) FROM votes AS v2
     );
+  -- if there is majority
   UPDATE task SET result = majorityChoice WHERE id = task_id; -- update task result
 
   UPDATE worker_campaign SET score = score + 1 -- update worker score
@@ -41,8 +43,7 @@ BEGIN
   WHERE worker_choice.choice = majorityChoice
   AND worker_campaign.campaign = task.campaign;
 
-  UPDATE worker_attitude SET level = level + 1
-  WHERE ROW(worker, keyword) IN (
+  FOR worker_keyword IN ( -- workers to level up
     SELECT wc.worker, tk.keyword
     FROM worker_choice AS wc
     JOIN choice AS c ON c.id = wc.choice
@@ -50,13 +51,23 @@ BEGIN
     WHERE wc.choice = majorityChoice
     AND c.task = task_id
     GROUP BY (wc.worker, tk.keyword)
-  );
-  RETURN NULL;
-EXCEPTION WHEN too_many_rows THEN
-  UPDATE task SET result = 0 WHERE id = task_id;
+  ) LOOP
+    IF EXISTS (
+      SELECT keyword
+      FROM worker_attitude AS wa
+      WHERE wa.worker = worker_keyword.worker
+      AND wa.keyword = worker_keyword.keyword
+    ) THEN
+      UPDATE worker_attitude SET level = level + 1
+      WHERE worker = worker_keyword.worker
+      AND keyword = worker_keyword.keyword;
+    ELSE
+      INSERT INTO worker_attitude(worker, keyword)
+      VALUES (worker_keyword.worker, worker_keyword.keyword);
+    END IF;
+  END LOOP;
 
-  UPDATE worker_attitude SET level = GREATEST(level - 1, 1)
-  WHERE ROW(worker, keyword) IN (
+  FOR worker_keyword IN ( -- workers to level down
     SELECT wc.worker, tk.keyword
     FROM worker_choice AS wc
     JOIN choice AS c ON c.id = wc.choice
@@ -64,7 +75,15 @@ EXCEPTION WHEN too_many_rows THEN
     WHERE wc.choice != majorityChoice
     AND c.task = task_id
     GROUP BY (wc.worker, tk.keyword)
-  );
+  ) LOOP
+    -- TODO: maybe if level is 0 remove the keyword, it's more coherent
+    UPDATE worker_attitude SET level = GREATEST(level - 1, 1)
+    WHERE worker = worker_keyword.worker
+    AND keyword = worker_keyword.keyword;
+  END LOOP;
+  RETURN NULL;
+EXCEPTION WHEN too_many_rows THEN -- if there is no majority
+  UPDATE task SET result = 0 WHERE id = task_id;
   RETURN NULL;
 END;
 $$ LANGUAGE 'plpgsql';
