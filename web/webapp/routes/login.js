@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../lib/db');
-var { inspect } = require('util');
 
 router.get('/', function (req, res) {
-  res.render('login');
+  res.json(req.session);
+  // res.render('login');
 });
 
 router.post('/', function (req, res) {

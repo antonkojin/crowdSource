@@ -4,7 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+const session = require('express-session');
+const sessionPgStrategy = require('connect-pg-simple')(session);
 var mustache = require('mustache-express4');
+const db = require('./lib/db');
 
 var login = require('./routes/login');
 var signup = require('./routes/signup');
@@ -26,6 +29,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(session({
+  store: new sessionPgStrategy({ pgPromise: db.db }),
+  resave: false,
+  saveUninitialized: true,
+  secret: 'example', // TODO: secret
+  
+}));
 
 app.use('/login', login);
 app.use('/signup', signup);
