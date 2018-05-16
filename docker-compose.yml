@@ -9,6 +9,7 @@ services:
       - DATABASE_URL=postgres://db_user:db_password@db:5432/db_name
       - DEBUG=myapp:*
       - NODE_ENV=development
+      - SESSION_SECRET=fioa)da(fosfirwj09rhwf80s-90=3m31x-n^$$@C2c%@V&C@*
     volumes:
       - ./web/webapp:/usr/src/app:rw
       - /usr/src/app/node_modules

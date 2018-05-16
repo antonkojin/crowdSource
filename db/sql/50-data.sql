@@ -1,9 +1,9 @@
 INSERT INTO requester (email, password) VALUES
-('requester@mail.test', 'a');
+('requester@mail.test', '$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK');
 INSERT INTO worker (email, password) VALUES
-('worker@mail.test', 'a'),
-('worker2@mail.test', 'a'),
-('worker3@mail.test', 'a');
+('worker@mail.test', '$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK'),
+('worker2@mail.test', '$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK'),
+('worker3@mail.test', '$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK');
 
 INSERT INTO campaign (name, majority_threshold, workers_per_task, "start", "end", apply_end, requester) VALUES
 (

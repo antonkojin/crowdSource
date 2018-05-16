@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var db = require('../lib/db');
 const {inspect} = require('util');
+const bcrypt = require('bcrypt');
 
 async function getAppliableOngoingAndCompletedCampagns(workerId) {
   const appliable = await (db.db.any(`
@@ -88,12 +89,12 @@ async function getReports(workerId) {
       FROM valid_tasks AS v
       LEFT JOIN executed_tasks AS e ON v.campaign_id = e.campaign_id
       LEFT JOIN ranking AS r ON r.campaign_id = e.campaign_id
-      `, queryArgs);
-    const campaignsReports = result;
-    return {
-      campaigns: campaignsReports
-    };
+  `, queryArgs);
+  const campaignsReports = result;
+  return {
+    campaigns: campaignsReports
   };
+};
   
 router.get('/login', function (req, res) {
   res.render('login');
@@ -101,13 +102,17 @@ router.get('/login', function (req, res) {
   
 router.post('/login', async function (req, res) {
   try {
-    const { id: workerId }  = await db.db.one(`
-      SELECT id
-      FROM worker WHERE email = \${email} AND password = \${password}
+    const {
+      id: workerId,
+      password: workerPassword
+    }  = await db.db.one(`
+      SELECT id, password
+      FROM worker WHERE email = \${email}
       `, {
-        email: req.body.email,
-      password: req.body.password
+        email: req.body.email
     });
+    const passwordMatch = await bcrypt.compare(req.body.password, workerPassword);
+    if (!passwordMatch) return res.sendStatus(403);
     req.session.user = {
       id: workerId,
       type: 'worker'
@@ -127,15 +132,22 @@ router.post('/login', async function (req, res) {
 });
 
 router.use((req, res, next) => {
-  // TODO:tro in requester, too
   console.log(req.session);
   console.log({sessionId: req.sessionID});
   if ( !req.session.user ) return res.sendStatus(403);
   next();
 });
 
+router.get('/logout', function (req, res) {
+  req.session.destroy(error => {
+    console.log(error);
+    return res.sendStatus(500);
+  });
+  return res.sendStatus(200);
+});
+
 router.get('/campaigns', async function (req, res, next) {
-  const workerId = 1; //TODO: authentication
+  const workerId = req.session.user.id;
   try {
     const campaigns = await getAppliableOngoingAndCompletedCampagns(workerId);
     const reports = await getReports(workerId);
@@ -147,7 +159,7 @@ router.get('/campaigns', async function (req, res, next) {
 });
 
 router.post('/campaigns/apply/:campaignId', async function (req, res, next) {
-  const workerId = 1; //TODO: authentication
+  const workerId = req.session.user.id;
   const campaignId = req.params.campaignId;
   try {
     const result = await (db.db.none(`
@@ -171,7 +183,7 @@ router.post('/campaigns/apply/:campaignId', async function (req, res, next) {
 });
 
 router.get('/campaign/:campaignId/task', async function (req, res, next) {
-  const workerId = 1; //TODO: authentication
+  const workerId = req.session.user.id;
   const campaignId = req.params.campaignId;
   try {
     const resultTaskId = await db.db.one(`
@@ -269,7 +281,7 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
 });
 
 router.post('/campaign/:campaignId/task/:taskId/choice/', async function (req, res, next) {
-  const workerId = 1; //TODO: authentication
+  const workerId = req.session.user.id;
   const campaignId = req.params.campaignId;
   const taskId = req.params.taskId;
   const choiceValue = req.body.choice;

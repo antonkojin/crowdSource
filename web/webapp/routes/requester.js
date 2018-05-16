@@ -19,12 +19,13 @@ router.get('/login', function (req, res) {
 router.post('/login', async function (req, res) {
   try {
     const { id: requesterId } = await db.db.one(`
-      SELECT id
-      FROM requester WHERE email = \${email} AND password = \${password}
+      SELECT id, password
+      FROM requester WHERE email = \${email}
     `, {
-      email: req.body.email,
-      password: req.body.password
+      email: req.body.email
     });
+    const passwordMatch = await bcrypt.compare(req.body.password, requesterPassword);
+    if (!passwordMatch) return res.sendStatus(403); 
     req.session.user = {
       id: requesterId,
       type: 'requester'
@@ -44,11 +45,18 @@ router.post('/login', async function (req, res) {
 });
 
 router.use((req, res, next) => {
-  // TODO:tro in requester, too
   console.log(req.session);
   console.log({sessionId: req.sessionID});
   if ( !req.session.user ) return res.sendStatus(403);
   next();
+});
+
+router.get('/logout', function (req, res) {
+  req.session.destroy(error => {
+    console.log(error);
+    return res.sendStatus(500);
+  });
+  return res.sendStatus(200);
 });
 
 async function insertCampaign(transaction, campaign) {
@@ -124,6 +132,7 @@ function insertTaskKeyword(transaction, {taskId, keywordId}) {
 router.post('/new-campaign', function (req, res) {
   db.db.tx(async transaction => {
     // campaign -> task -> {choice, keyword -> task_keyword) the leafs are unresolved
+    const requesterId = req.session.user.id;
     try {
       const campaignId = await insertCampaign(transaction, {
         name: req.body.name,
@@ -132,7 +141,7 @@ router.post('/new-campaign', function (req, res) {
         start: req.body.start,
         end: req.body.end,
         apply_end: req.body.apply_end,
-        requester: 1 // TODO: still don't want to imlement login? because of cookies and session and things?
+        requester: requesterId
       });
 
 
@@ -176,7 +185,7 @@ router.post('/new-campaign', function (req, res) {
 });
 
 router.get('/campaigns', async function (req, res, next) {
-  const requesterId = 1; // TODO: auth
+  const requesterId = req.session.user.id;
   try {
     const campaigns = await db.db.any(`
     SELECT id, name FROM campaign WHERE requester = \${requester}
@@ -192,7 +201,7 @@ router.get('/campaigns', async function (req, res, next) {
 });
 
 router.get('/report/:campaignId', async function (req, res, next) {
-  const requesterId = 1; //TODO auth
+  const requesterId = req.session.user.id;
   const campaignId = req.params.campaignId;
   try {
     // name, id, completed, ongoing, valid/executed, tasks with result if any 

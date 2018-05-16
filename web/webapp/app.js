@@ -33,8 +33,13 @@ app.use(session({
   store: new sessionPgStrategy({ pgPromise: db.db }),
   resave: false,
   saveUninitialized: false,
-  secret: 'example', // TODO: secret
-  
+  secret: process.env.SESSION_SECRET,
+  unset: 'destroy',
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    maxAge: 1 * 24 * 60 * 60 * 1000 // 1 day
+  }
 }));
 
 app.use('/signup', signup);
