@@ -1,44 +1,37 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-  </head>
+<html lang="en">
+  {{> head}}
   <body>
-    <div id="my-campaigns">
-      <h4>Ongoing Campaigns</h4>
-      <ul>
-      {{#campaigns.ongoing}}
-        <li><a href="/worker/campaign/{{id}}/task">{{name}}</a></li>
-      {{/campaigns.ongoing}}
-      </ul>
+    <div class="container">
+      <div class="row" id="my-campaigns">
+        <h4>Ongoing Campaigns</h4>
+        <ul>
+        {{#campaigns.ongoing}}
+          <li><a href="/worker/campaign/{{id}}/task">{{name}}</a></li>
+        {{/campaigns.ongoing}}
+        </ul>
+      </div>
+      <div class="row" id="appliable-campaigns">
+        <h4>Apply to Campaign</h4>
+        <ul>
+          {{#campaigns.appliable}}
+          <li>
+            <button data-campaign-id={{id}}> {{name}} </button>
+          </li>
+          {{/campaigns.appliable}}
+        </ul>
+      </div>
+      <div class="row" id="completed-campaigns">
+        <h4>Completed Campaigns</h4>
+        <ul>
+        {{#campaigns.completed}}
+          <li><p>{{name}}</p></li>
+        {{/campaigns.completed}}
+        </ul>
+      </div>
+      {{> worker-reports}}
     </div>
-    <div id="appliable-campaigns">
-      <h4>Apply to Campaign</h4>
-      <ul>
-        {{#campaigns.appliable}}
-        <li>
-          <button data-campaign-id={{id}}> {{name}} </button>
-        </li>
-        {{/campaigns.appliable}}
-      </ul>
-    </div>
-    <div id="completed-campaigns">
-      <h4>Completed Campaigns</h4>
-      <ul>
-      {{#campaigns.completed}}
-        <li><p>{{name}}</p></li>
-      {{/campaigns.completed}}
-      </ul>
-    </div>
-    {{> worker-reports}}
     <script src="/js/worker-campaigns.js"></script>
-    <style>
-      div {
-        border: solid 1px black;
-        margin: 5px;
-        padding: 5px;
-      }
     </style>
   </body>
 </html>
