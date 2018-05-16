@@ -4,32 +4,32 @@ const {inspect} = require('util');
 
 async function getAppliableOngoingAndCompletedCampagns(workerId) {
   const appliable = await (db.db.any(`
-    SELECT * FROM
-    campaign
+  SELECT * FROM
+  campaign
     WHERE apply_end > CURRENT_TIMESTAMP
     AND id NOT IN (
       SELECT campaign FROM
       worker_campaign
       WHERE worker = $\{worker} 
     )
-  `, {
+    `, {
     worker: workerId
   }));
-
+  
   const applied = await (db.db.any(`
     SELECT campaign.id, campaign.name FROM
     worker_campaign JOIN campaign
     ON campaign.id = worker_campaign.campaign
     WHERE worker_campaign.worker = \${worker};
-  `, {
-    worker: workerId
+    `, {
+      worker: workerId
   }));
-
+  
   const ongoing = await (db.db.any(`
-    WITH completed_tasks AS (
-      SELECT task.id
-      FROM worker_choice
-      JOIN choice ON choice.id = worker_choice.choice
+  WITH completed_tasks AS (
+    SELECT task.id
+    FROM worker_choice
+    JOIN choice ON choice.id = worker_choice.choice
       JOIN task ON task.id = choice.task
       JOIN campaign ON campaign.id = task.campaign
       GROUP BY task.id, campaign.workers_per_task
@@ -41,8 +41,8 @@ async function getAppliableOngoingAndCompletedCampagns(workerId) {
       WHERE task.id NOT IN (SELECT id FROM completed_tasks)
       AND worker_campaign.worker = \${worker}
       GROUP BY campaign.id
-  `, {
-    worker: workerId
+      `, {
+        worker: workerId
   }));
   console.log(ongoing);
   // completed = applied - ongoing
@@ -55,29 +55,29 @@ async function getReports(workerId) {
   const result = await db.db.any(`
     WITH executed_tasks AS (
       SELECT campaign.name AS campaign_name,
-        campaign.id AS campaign_id,
-        COUNT(task.id) AS executed_tasks
+      campaign.id AS campaign_id,
+      COUNT(task.id) AS executed_tasks
       FROM worker_choice LEFT JOIN choice
-        ON worker_choice.choice = choice.id
-      LEFT JOIN task
+      ON worker_choice.choice = choice.id
+        LEFT JOIN task
         ON task.id = choice.task
-      LEFT JOIN campaign
+        LEFT JOIN campaign
         ON campaign.id = task.campaign
-      WHERE worker_choice.worker = \${worker}
-      GROUP BY campaign.id
+        WHERE worker_choice.worker = \${worker}
+        GROUP BY campaign.id
     ), valid_tasks AS (
       SELECT worker_campaign.campaign AS campaign_id,
-        worker_campaign.score AS valid_tasks,
-        campaign.name AS campaign_name
+      worker_campaign.score AS valid_tasks,
+      campaign.name AS campaign_name
       FROM worker_campaign
       JOIN campaign ON worker_campaign.campaign = campaign.id
       WHERE worker_campaign.worker = \${worker}
     ), ranking AS (
       SELECT worker_campaign.campaign AS campaign_id,
-        COUNT(worker_campaign.worker) + 1 AS ranking
+      COUNT(worker_campaign.worker) + 1 AS ranking
       FROM worker_campaign
       WHERE worker <> \${worker}
-        AND worker_campaign.score > (
+      AND worker_campaign.score > (
           SELECT t.score FROM worker_campaign AS t WHERE t.worker = \${worker} AND t.campaign = worker_campaign.campaign
         )
       GROUP BY worker_campaign.campaign
@@ -88,12 +88,51 @@ async function getReports(workerId) {
       FROM valid_tasks AS v
       LEFT JOIN executed_tasks AS e ON v.campaign_id = e.campaign_id
       LEFT JOIN ranking AS r ON r.campaign_id = e.campaign_id
-  `, queryArgs);
+      `, queryArgs);
     const campaignsReports = result;
     return {
       campaigns: campaignsReports
     };
-};
+  };
+  
+router.get('/login', function (req, res) {
+  res.render('login');
+});
+  
+router.post('/login', async function (req, res) {
+  try {
+    const { id: workerId }  = await db.db.one(`
+      SELECT id
+      FROM worker WHERE email = \${email} AND password = \${password}
+      `, {
+        email: req.body.email,
+      password: req.body.password
+    });
+    req.session.user = {
+      id: workerId,
+      type: 'worker'
+    };
+    req.session.cookie.path = '/worker/'
+    console.log(req.session);
+    console.log(req.session.id);
+    res.sendStatus(200);
+  } catch(error) {
+    if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
+      res.sendStatus(403);
+    } else {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
+});
+
+router.use((req, res, next) => {
+  // TODO:tro in requester, too
+  console.log(req.session);
+  console.log({sessionId: req.sessionID});
+  if ( !req.session.user ) return res.sendStatus(403);
+  next();
+});
 
 router.get('/campaigns', async function (req, res, next) {
   const workerId = 1; //TODO: authentication

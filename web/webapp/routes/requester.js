@@ -11,6 +11,46 @@ router.get('/new-campaign', function (req, res, next) {
   res.render('requester-campaign-creation');
 });
 
+
+router.get('/login', function (req, res) {
+  res.render('login');
+});
+
+router.post('/login', async function (req, res) {
+  try {
+    const { id: requesterId } = await db.db.one(`
+      SELECT id
+      FROM requester WHERE email = \${email} AND password = \${password}
+    `, {
+      email: req.body.email,
+      password: req.body.password
+    });
+    req.session.user = {
+      id: requesterId,
+      type: 'requester'
+    };
+    req.session.cookie.path = '/requester/'
+    console.log(req.session);
+    console.log(req.session.id);
+    res.sendStatus(200);
+  } catch(error) {
+    if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
+      res.sendStatus(403);
+    } else {
+      console.error(error);
+      res.sendStatus(500);
+    }
+  }
+});
+
+router.use((req, res, next) => {
+  // TODO:tro in requester, too
+  console.log(req.session);
+  console.log({sessionId: req.sessionID});
+  if ( !req.session.user ) return res.sendStatus(403);
+  next();
+});
+
 async function insertCampaign(transaction, campaign) {
   const queryCampaign = `
     INSERT INTO campaign (name, majority_threshold, workers_per_task, "start", "end", apply_end, requester) VALUES

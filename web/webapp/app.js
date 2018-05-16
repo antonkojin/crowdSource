@@ -9,7 +9,6 @@ const sessionPgStrategy = require('connect-pg-simple')(session);
 var mustache = require('mustache-express4');
 const db = require('./lib/db');
 
-var login = require('./routes/login');
 var signup = require('./routes/signup');
 var worker = require('./routes/worker');
 var requester = require('./routes/requester');
@@ -33,12 +32,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   store: new sessionPgStrategy({ pgPromise: db.db }),
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   secret: 'example', // TODO: secret
   
 }));
 
-app.use('/login', login);
 app.use('/signup', signup);
 app.use('/worker', worker);
 app.use('/requester', requester);
