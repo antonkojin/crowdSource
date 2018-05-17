@@ -1,12 +1,25 @@
 <div id="reports">
   <h4>Campaigns reports</h4>
-  {{#reports.campaigns}}
-    <div class="campaign-report">
-      <h5>Campaign: {{campaign_name}}</h5>
-      <p>executed tasks: {{executed_tasks}}</p>
-      <p>valid tasks: {{valid_tasks}}</p>
-      <!-- maybe ranking will be ordinal with a lambda mustache -->
-      <p>Ranking: {{ranking}}</p>
+  <div class="campaign-report">
+    <table>
+      <thead>
+        <tr>
+          <th>Campaign name</th>
+          <th>Executed tasks</th>
+          <th>Valid tasks</th>
+          <th>My ranking</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#reports.campaigns}}
+          <tr>
+            <td>{{campaign_name}}</td>
+            <td>{{executed_tasks}}</td>
+            <td>{{valid_tasks}}</td>
+            <td>{{ranking}}</td>
+          </tr>
+        {{/reports.campaigns}}
+        </tbody>
+      </table>
     </div>
-  {{/reports.campaigns}}
 </div>

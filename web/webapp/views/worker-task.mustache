@@ -2,19 +2,27 @@
 <html lang="en">
   {{> head}}
   <body>
-    <form action="/worker/campaign/{{task.campaignId}}/task/{{task.id}}/choice" method="POST">
-      <div id="task-description">
-        <p id="task-title" name="title">{{task.name}}</p>
-        <p id="task-context" name="context">{{task.context}}</p>
-      </div>
-      <div id="task-choices">
-        {{#task.choices}}
-          <input type="radio" id="{{htmlRadioId}}" name="choice" value="{{value}}" required>
-          <label for="{{htmlRadioId}}">{{name}}</label>
-        {{/task.choices}}
-      </div>
-      <button type="submit">Submit</button>
-      <a href="/worker/campaigns">Back</button>
-    </form>
+    <div class="container">
+      <form action="/worker/campaign/{{task.campaignId}}/task/{{task.id}}/choice" method="POST">
+        <div class="row">
+          <h1 id="task-title" name="title">{{task.name}}</h1>
+        </div>
+        <div class="row">
+            <h2 id="task-context" name="context">{{task.context}}</h2>
+        </div>
+        <div class="row" id="task-choices">
+          {{#task.choices}}
+          <label>
+            <input type="radio" id="{{htmlRadioId}}" name="choice" value="{{value}}" required>
+            <span class="label-body"> {{name}} </span>
+          </label>
+          {{/task.choices}}
+        </div>
+        <div class="row">
+          <button class="button-primary" type="submit">Submit</button>
+          <a class="button" href="/worker/campaigns">Back</a>
+        </div>
+      </form>
+    </div>
   </body>
 </html>

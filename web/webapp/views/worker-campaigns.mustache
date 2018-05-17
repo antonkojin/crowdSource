@@ -4,32 +4,47 @@
   <body>
     <div class="container">
       <div class="row" id="my-campaigns">
-        <h4>Ongoing Campaigns</h4>
-        <ul>
-        {{#campaigns.ongoing}}
-          <li><a href="/worker/campaign/{{id}}/task">{{name}}</a></li>
-        {{/campaigns.ongoing}}
-        </ul>
+        <div class="column">
+          <h4>Ongoing Campaigns</h4>
+          <ul>
+            {{#campaigns.ongoing}}
+            <li><a class="button" href="/worker/campaign/{{id}}/task">{{name}}</a></li>
+            {{/campaigns.ongoing}}
+          </ul>
+        </div>
       </div>
       <div class="row" id="appliable-campaigns">
-        <h4>Apply to Campaign</h4>
-        <ul>
-          {{#campaigns.appliable}}
-          <li>
-            <button data-campaign-id={{id}}> {{name}} </button>
-          </li>
-          {{/campaigns.appliable}}
-        </ul>
+        <div class="column">
+          <h4>Apply to Campaign</h4>
+          <ul>
+            {{#campaigns.appliable}}
+            <li>
+              <button data-campaign-id={{id}}> {{name}} </button>
+            </li>
+            {{/campaigns.appliable}}
+          </ul>
+        </div>
       </div>
       <div class="row" id="completed-campaigns">
-        <h4>Completed Campaigns</h4>
-        <ul>
-        {{#campaigns.completed}}
-          <li><p>{{name}}</p></li>
-        {{/campaigns.completed}}
-        </ul>
+        <div class="column">
+          <h4>Completed Campaigns</h4>
+          <ul>
+          {{#campaigns.completed}}
+            <li><button disabled>{{name}}</button></li>
+          {{/campaigns.completed}}
+          </ul>
+        </div>
       </div>
-      {{> worker-reports}}
+      <div class="row">
+        <div class="column">
+          {{> worker-reports}}
+        </div>
+      </div>
+      <div class="row">
+        <div class="column">
+          <a class="button" href="logout">Logout</a>
+        </div>
+      </div>
     </div>
     <script src="/js/worker-campaigns.js"></script>
     </style>

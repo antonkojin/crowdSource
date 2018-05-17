@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('../lib/db');
 var { inspect } = require('util');
+const bcrypt = require('bcrypt');
 
 router.get('/verification', function (req, res, next) {
   res.render('requester-verification');
@@ -18,7 +19,7 @@ router.get('/login', function (req, res) {
 
 router.post('/login', async function (req, res) {
   try {
-    const { id: requesterId } = await db.db.one(`
+    const { id: requesterId, password: requesterPassword } = await db.db.one(`
       SELECT id, password
       FROM requester WHERE email = \${email}
     `, {

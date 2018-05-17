@@ -1,5 +1,22 @@
-const onLoad = (() => {
+const createCampaign = (() => {
   var tasks = [];
+
+  const removeTask = (tableRow) => {
+    const removeTaskName = tableRow.children[0].innerText;
+    console.log({removeTaskName});
+    tasks = tasks.filter(t => !(t.title == removeTaskName));
+    renderTasks(tasks);
+  };
+
+  const renderTasks = (tasks) => {
+    const htmlTasksList = document.querySelector('table#tasks-list > tbody');
+    htmlTasksList.innerHTML = tasks.map(task => `
+      <tr>
+        <td>${task.title}</td>
+        <td style="text-align: right"><button onclick="createCampaign.removeTask(this.parentNode.parentNode)" class="button-remove-task">Remove</button></td>
+      </tr>
+    `).join('\n');
+  }; 
 
   const addTask = (event) => {
     const taskFormValid = document.getElementById('new-task-form').reportValidity();
@@ -28,12 +45,7 @@ const onLoad = (() => {
     console.log(task);
     tasks.push(task);
     document.getElementById('new-task-form').reset();
-    const htmlTasksList = document.getElementById('tasks-list');
-    htmlTasksList.innerHTML = tasks.map(task => `
-      <li>
-        <p>${task.title}</p>
-      </li>
-    `).join('\n');
+    renderTasks(tasks);
     event.preventDefault();
   };
 
@@ -81,7 +93,11 @@ const onLoad = (() => {
     createCampaignButton.onclick = createCampaign;
   };
 
-  return init;
+  return {
+    init,
+    renderTasks,
+    removeTask
+  };
 })();
 
-document.addEventListener('DOMContentLoaded', onLoad, false);
+document.addEventListener('DOMContentLoaded', createCampaign.init, false);

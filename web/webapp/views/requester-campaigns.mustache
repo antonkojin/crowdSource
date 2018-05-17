@@ -2,16 +2,27 @@
 <html lang="en">
   {{> head}}
   <body>
-    <h1>Campaigns</h1>
-    <ul>
-      {{#campaigns}}
-      <li>
-        <a href="/requester/report/{{id}}">
-          {{name}}
-        </a>
-      </li>
-      {{/campaigns}}
-    </ul>
-    <button onclick="window.location = 'new-campaign'">Create campaign</button>
+    <div class="container">
+      <div class="row">
+        <div class="column">
+          <h1>Campaigns</h1>
+          <ul>
+            {{#campaigns}}
+            <li>
+              <a class="button" href="/requester/report/{{id}}">
+              {{name}}
+            </a>
+          </li>
+          {{/campaigns}}
+        </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="column">
+          <button class="button-primary" onclick="window.location = 'new-campaign'">Create campaign</button>
+          <a class="button" href="logout">Logout</a>
+        </div>
+      </div>
+  </div>
   </body>
 </html>

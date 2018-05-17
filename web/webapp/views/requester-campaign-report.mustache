@@ -2,30 +2,36 @@
 <html lang="en">
   {{> head}}
   <body>
-    <h1>Name: {{name}}</h1>
-    <h1>Id: {{id}}</h1>
-    <div>
-      <h3>Overview</h3>
-      <p>Completed tasks: {{completedTasks}}</p>
-      <p>Ongoing tasks: {{ongoingTasks}}</p>
-      <p>Valid / executed tasks: {{validTasks}} / {{completedTasks}}</p>
+    <div class="container">
+      <h1>{{name}}</h1>
+      <div class="row" id="overview">
+        <div class="column">
+          <p>Completed tasks: {{completedTasks}}</p>
+          <p>Ongoing tasks: {{ongoingTasks}}</p>
+          <p>Valid / executed tasks: {{validTasks}} / {{completedTasks}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="column">
+          <h3>Tasks results</h3>
+          <ul>
+            {{#tasks}}
+              <li>{{title}}: {{#result}} {{result}} {{/result}} {{^result}} None {{/result}}</li>
+            {{/tasks}}
+          </ul>
+        </div>
+      </div>
+      <div class="row">
+        <div class="column">
+          <h3>Top 10</h3>
+          <ol>
+            {{#topTenWorkers}}
+            <li>{{email}} (score: {{score}})</li>
+            {{/topTenWorkers}}
+          </ol>
+        </div>
+      </div>
+      <a class="button" href="/requester/campaigns">Back</a>
     </div>
-    <div>
-      <h3>Tasks results</h3>
-      <ul>
-        {{#tasks}}
-          <li>{{title}}: {{#result}} {{result}} {{/result}} {{^result}} None {{/result}}</li>
-        {{/tasks}}
-      </ul>
-    </div>
-    <div>
-      <h3>Top 10</h3>
-      <ol>
-        {{#topTenWorkers}}
-        <li>{{email}} (score: {{score}})</li>
-        {{/topTenWorkers}}
-      </ol>
-    </div>
-    <a href="/requester/campaigns">Back</button>
   </body>
 </html>
