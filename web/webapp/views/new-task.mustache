@@ -1,0 +1,33 @@
+<div id="new-task-modal-background">
+  <div class="container" id="new-task-modal">
+    <form id="new-task-form" action="" method="">
+      <h3>New task</h3>
+      <div class="row">
+        <div class="column one-half">
+          <label for="new-task-title">Title</label>
+          <input type="text" class="u-full-width" id="new-task-title" name="title" required></input>
+        </div>
+        <div class="column one-half">
+          <label for="new-task-context">Context</label>
+          <input type="text" class="u-full-width" id="new-task-context" name="context" required></input>
+        </div>
+      </div>
+      <div class="row">
+        <div class="column one-half">
+          <label for="new-task-choices">Choices</label>
+          <input type="text" class="u-full-width" id="new-task-choices" name="choices" type="text" placeholder="choice:value, another_choice:value" required></input>
+        </div>
+        <div class="column one-half">
+          <label for="new-task-keywords">Keywords</label>
+          <input type="text" class="u-full-width" id="new-task-keywords" name="keywords" type="text" placeholder="keyword, another keyword" required></input>
+        </div>
+      </div>
+    </form>
+    <div class="row">
+      <div class="column">
+        <button class="button-primary" id="add-task-button" type="submit">Add task</button>
+        <button id="close-new-task-button" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

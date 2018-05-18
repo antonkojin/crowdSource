@@ -5,39 +5,12 @@
     <div class="container">
       
       <h1>Create new campaign</h1>
-      <form id="new-task-form" action="" method="">
-        <h3>New task</h3>
-        <div class="row">
-          <div class="column one-half">
-            <label for="new-task-title">Title</label>
-            <input type="text" class="u-full-width" id="new-task-title" name="title" required></input>
-          </div>
-          <div class="column one-half">
-            <label for="new-task-context">Context</label>
-            <input type="text" class="u-full-width" id="new-task-context" name="context" required></input>
-          </div>
-        </div>
-        <div class="row">
-          <div class="column one-half">
-            <label for="new-task-choices">Choices</label>
-            <input type="text" class="u-full-width" id="new-task-choices" name="choices" type="text" required></input>
-          </div>
-          <div class="column one-half">
-            <label for="new-task-keywords">Keywords</label>
-            <input type="text" class="u-full-width" id="new-task-keywords" name="keywords" type="text" required></input>
-          </div>
-        </div>
-        <div class="row">
-          <div class="column one">
-            <button id="add-task-button" type="submit">Add task</button>
-          </div>
-        </div>
-      </form>
+      
       <form id="campaign-form" method="" action="">
         <div class="row">
           <div class="columns twelve">
             <h3>Tasks</h3>
-            <table id="tasks-list">
+            <table class="u-full-width" id="tasks-list">
               <thead>
                 <tr>
                   <th>Title</th>
@@ -49,11 +22,16 @@
           </div>
         </div>
         <div class="row">
-          <div class="columns seven">
+          <div class="column twelve">
+            <button class="u-pull-right button-primary" id="new-task-button" type="button">Add task</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="columns six">
             <label for="campaign-name">Campaign name</label>
             <input class="u-full-width" id="campaign-name" type="text" name="campaign-name" required>
           </div>
-          <div class="columns two">
+          <div class="columns three">
             <label for="campaign-workers-per-task">Workers/task</label>
             <input class="u-full-width" id="campaign-workers-per-task" name="workers-per-task" type="number" value="1" required>
           </div>
@@ -64,10 +42,6 @@
         </div>
         <div class="row">
           <div class="column one-third">
-            <label for="campaign-apply-end">Apply end</label>
-            <input id="campaign-apply-end" type="datetime-local" required>
-          </div>
-          <div class="column one-third">
             <label for="campaign-start">Start</label>
             <input id="campaign-start" type="datetime-local" required>
           </div>
@@ -75,11 +49,17 @@
             <label for="campaign-end">End</label>
             <input id="campaign-end" type="datetime-local" required>
           </div>
+          <div class="column one-third">
+            <label for="campaign-apply-end">Apply end</label>
+            <input id="campaign-apply-end" type="datetime-local" required>
+          </div>
         </div>
-        <button id="create-campaign-button" type="submit">Create</button>
+        <button class="button-primary" id="create-campaign-button" type="submit">Create</button>
+        <button type="button" onclick="window.location='campaigns'">Back</button>
       </form>
       
     </div>
     <script src="/js/create-campaign.js"></script>
+    {{> new-task}}
   </body>
 </html>

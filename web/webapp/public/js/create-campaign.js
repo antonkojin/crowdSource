@@ -45,6 +45,7 @@ const createCampaign = (() => {
     console.log(task);
     tasks.push(task);
     document.getElementById('new-task-form').reset();
+    document.querySelector('#new-task-modal-background').style.display = 'none';
     renderTasks(tasks);
     event.preventDefault();
   };
@@ -86,9 +87,28 @@ const createCampaign = (() => {
     event.preventDefault();
   };
 
+  const newTaskModalOpen = (event) => {
+    document.querySelector('#new-task-modal-background').style.display = 'block';
+    document.querySelector('#new-task-title').focus();
+    event.preventDefault();
+  };
+
   const init = () => {
     const addTaskButton = document.getElementById('add-task-button');
     addTaskButton.onclick = addTask;
+    const newTaskButton = document.getElementById('new-task-button');
+    newTaskButton.onclick = newTaskModalOpen;
+    document.getElementById('close-new-task-button').onclick = (e) => {
+      document.getElementById('new-task-form').reset();
+      document.querySelector('#new-task-modal-background').style.display = 'none';
+      e.preventDefault();
+    };
+    // TODO: locale time? mhh, nope
+    const start = new Date().toISOString().slice(0, -8);
+    const end = new Date(new Date().getTime() + (365 * 24 * 60 * 60 * 1000)).toISOString().slice(0, -8);
+    document.querySelector('#campaign-start').value = start;
+    document.querySelector('#campaign-end').value = end;
+    document.querySelector('#campaign-apply-end').value = end;
     const createCampaignButton = document.getElementById('create-campaign-button');
     createCampaignButton.onclick = createCampaign;
   };

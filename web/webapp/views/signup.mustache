@@ -1,26 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-  {{> head}}
+{{> head}}
   <body>
-    <h1>Signup</h1>
-    <form action="signup" method="POST">
-      <div>
-        <label for="email">Email</label>
-        <input id="email" type="text" placeholder="Email" name="email" required="">
+    <div class="container" id="signup-container">
+      <h1>Signup</h1>
+      <form action="signup" method="POST">
+        <div class="row">
+          <div class="column one-half">
+            <label for="email">Email</label>
+            <input class="u-full-width" id="email" type="email" placeholder="Email" name="email" required="">
+          </div>
+          <div class="column one-half">
+            <label for="password">Password</label>
+            <input class="u-full-width" id="password" type="text" placeholder="Password" name="password" required="">
+          </div>
+        </div>
+        <div class="row">
+          <div class="columns three">
+            <label for="worker">
+              <input type="radio" id="worker" name="user" value="worker" required>
+              <span class="label-body"> Worker </span>
+            </label>
+          </div>
+          <div class="columns four">
+            <label for="requester">
+              <input type="radio" id="requester" name="user" value="requester" required>
+              <span class="label-body"> Requester </span>
+            </label>
+          </div>
+        </div>
+      </form>
+      <div class="row">
+        <button class="button-primary" type="submit">Signup</button>
       </div>
-      <div>
-        <label for="password">Password</label>
-        <input id="password" type="text" placeholder="Password" name="password" required="">
-      </div>
-      <div>
-        <input type="radio" id="worker" name="user" value="worker" required>
-        <label for="worker">Worker</label>
-        <input type="radio" id="requester" name="user" value="requester" required>
-        <label for="requester">Requester</label>
-      </div>
-      <div>
-        <button type="submit">Signup</button>
-      </div>
-    </form>
+    </div>
   </body>
 </html>

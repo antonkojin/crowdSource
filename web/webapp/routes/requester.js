@@ -8,11 +8,6 @@ router.get('/verification', function (req, res, next) {
   res.render('requester-verification');
 });
 
-router.get('/new-campaign', function (req, res, next) {
-  res.render('requester-campaign-creation');
-});
-
-
 router.get('/login', function (req, res) {
   res.render('login');
 });
@@ -34,7 +29,7 @@ router.post('/login', async function (req, res) {
     req.session.cookie.path = '/requester/'
     console.log(req.session);
     console.log(req.session.id);
-    res.sendStatus(200);
+    res.redirect('campaigns');
   } catch(error) {
     if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
       res.sendStatus(403);
@@ -57,7 +52,11 @@ router.get('/logout', function (req, res) {
     console.log(error);
     return res.sendStatus(500);
   });
-  return res.sendStatus(200);
+  res.redirect('login');
+});
+
+router.get('/new-campaign', function (req, res, next) {
+  res.render('requester-campaign-creation');
 });
 
 async function insertCampaign(transaction, campaign) {

@@ -2,18 +2,22 @@
 <html lang="en">
   {{> head}}
   <body>
-    <div class="container ">
-      <div class="row">
-        <div class="column one-third offset-by-one-third">
-          <h1>Login</h1>
-          <form action="login" method="POST">
+    <div class="container" id="login-container">
+      <h1>Login</h1>
+      <form action="login" method="POST">
+        <div class="row">
+          <div class="column one-half">
             <label for="email">Email</label>
-            <input class="u-full-width" id="email" type="text" placeholder="Email" name="email" required="">
+            <input class="u-full-width" id="email" type="email" placeholder="Email" name="email" required="">
+          </div>
+          <div class="column one-half">
             <label for="password">Password</label>
             <input class="u-full-width" id="password" type="text" placeholder="Password" name="password" required="">
-            <button class="button-primary" type="submit">Login</button>
-          </form>
+          </div>
         </div>
+      </form>
+      <div class="row">
+        <button class="button-primary" type="submit">Login</button>
       </div>
     </div>
   </body>

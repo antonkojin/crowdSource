@@ -120,7 +120,7 @@ router.post('/login', async function (req, res) {
     req.session.cookie.path = '/worker/'
     console.log(req.session);
     console.log(req.session.id);
-    res.sendStatus(200);
+    res.redirect('campaigns');
   } catch(error) {
     if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
       res.sendStatus(403);
