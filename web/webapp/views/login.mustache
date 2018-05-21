@@ -2,9 +2,10 @@
 <html lang="en">
   {{> head}}
   <body>
+    {{> header}}
     <div class="container" id="login-container">
       <h1>Login</h1>
-      <form action="login" method="POST">
+      <form action="login" method="POST" id="login-form">
         <div class="row">
           <div class="column one-half">
             <label for="email">Email</label>
@@ -12,12 +13,12 @@
           </div>
           <div class="column one-half">
             <label for="password">Password</label>
-            <input class="u-full-width" id="password" type="text" placeholder="Password" name="password" required="">
+            <input class="u-full-width" id="password" type="password" placeholder="Password" name="password" required="">
           </div>
         </div>
       </form>
       <div class="row">
-        <button class="button-primary" type="submit">Login</button>
+        <button class="button-primary" id="button-login" form="login-form" type="submit">Login</button>
       </div>
     </div>
   </body>
