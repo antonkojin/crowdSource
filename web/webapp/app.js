@@ -7,9 +7,10 @@ var bodyParser = require('body-parser');
 const session = require('express-session');
 const sessionPgStrategy = require('connect-pg-simple')(session);
 var mustache = require('mustache-express4');
+const sass = require('node-sass-middleware');
 const db = require('./lib/db');
 
-var signup = require('./routes/signup');
+var index = require('./routes/index');
 var worker = require('./routes/worker');
 var requester = require('./routes/requester');
 
@@ -28,6 +29,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(sass({
+  src: path.join(__dirname, 'scss'),
+  // dest: path.join(__dirname, 'public'),
+  debug: true,
+  response: true,
+  prefix: '/css'
+}));
+
 app.use(session({
   store: new sessionPgStrategy({ pgPromise: db.db }),
   resave: false,
@@ -41,7 +50,7 @@ app.use(session({
   }
 }));
 
-app.use('/signup', signup);
+app.use('/', index);
 app.use('/worker', worker);
 app.use('/requester', requester);
 

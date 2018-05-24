@@ -3,9 +3,9 @@
   {{> head}}
   <body>
     {{> header}}
-    <div class="container" id="login-container">
-      <h1>Login</h1>
-      <form action="login" method="POST" id="login-form">
+    <div class="container" id="body">
+      <h1>{{title}}</h1>
+      <form action="/worker/login" method="POST" id="login-form">
         <div class="row">
           <div class="column one-half">
             <label for="email">Email</label>
@@ -16,10 +16,31 @@
             <input class="u-full-width" id="password" type="password" placeholder="Password" name="password" required="">
           </div>
         </div>
+
+        <div class="row">
+            <div class="columns three">
+              <label for="worker">
+                <input type="radio" id="worker" name="user" value="worker" required checked>
+                <span class="label-body"> Worker </span>
+              </label>
+            </div>
+            <div class="columns four">
+              <label for="requester">
+                <input type="radio" id="requester" name="user" value="requester" required>
+                <span class="label-body"> Requester </span>
+              </label>
+            </div>
+          </div>
+
       </form>
       <div class="row">
         <button class="button-primary" id="button-login" form="login-form" type="submit">Login</button>
       </div>
+      <div class="row">
+          <a class="button" href="/signup" >Signup</a>
+      </div>
     </div>
+    {{> footer}}
+    <script src="js/login.js"></script>
   </body>
 </html>

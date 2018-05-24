@@ -2,17 +2,18 @@
 <html lang="en">
 {{> head}}
   <body>
-    <div class="container" id="signup-container">
+    {{> header}}
+    <div class="container" id="body">
       <h1>Signup</h1>
-      <form action="signup" method="POST">
+      <form action="signup" method="POST" id="signup-form">
         <div class="row">
-          <div class="column one-half">
+          <div class="columns six">
             <label for="email">Email</label>
-            <input class="u-full-width" id="email" type="email" placeholder="Email" name="email" required="">
+            <input class="u-full-width" id="email" type="email" placeholder="Email" name="email" required>
           </div>
-          <div class="column one-half">
+          <div class="columns six">
             <label for="password">Password</label>
-            <input class="u-full-width" id="password" type="password" placeholder="Password" name="password" required="">
+            <input class="u-full-width" id="password" type="password" placeholder="Password" name="password" required>
           </div>
         </div>
         <div class="row">
@@ -31,8 +32,12 @@
         </div>
       </form>
       <div class="row">
-        <button class="button-primary" type="submit">Signup</button>
+        <button class="button-primary" form="signup-form" type="submit">Signup</button>
+      </div>
+      <div class="row">
+        <a href="/login" class="button">Login</a>
       </div>
     </div>
   </body>
+  {{> footer}}
 </html>

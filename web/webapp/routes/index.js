@@ -3,11 +3,11 @@ var router = express.Router();
 const db = require('../lib/db');
 const bcrypt = require('bcrypt');
 
-router.get('/', function (req, res) {
+router.get('/signup', function (req, res) {
   res.render('signup');
 });
 
-router.post('/', async function (req, res) {
+router.post('/signup', async function (req, res) {
   if (!['worker', 'requester'].includes(req.body.user)) return res.sendStatus(400); 
   try {
     const passwordHash = await bcrypt.hash(req.body.password, await bcrypt.genSalt());
@@ -30,4 +30,11 @@ router.post('/', async function (req, res) {
   }
 });
 
+
+router.get('/login', function (req, res) {
+  res.render('login', {
+    title: 'Login'
+  });
+});
+  
 module.exports = router;

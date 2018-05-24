@@ -2,6 +2,7 @@ var router = require('express').Router();
 var db = require('../lib/db');
 const {inspect} = require('util');
 const bcrypt = require('bcrypt');
+const ordinal = require('ordinal');
 
 async function getAppliableOngoingAndCompletedCampagns(workerId) {
   const appliable = await (db.db.any(`
@@ -85,21 +86,18 @@ async function getReports(workerId) {
     ) SELECT v.campaign_id, v.campaign_name,
       COALESCE(e.executed_tasks, 0) AS executed_tasks,
       COALESCE(v.valid_tasks, 0) AS valid_tasks,
-      COALESCE(r.ranking, 1) AS ranking
+      COALESCE(r.ranking, 1)::INTEGER AS ranking
       FROM valid_tasks AS v
       LEFT JOIN executed_tasks AS e ON v.campaign_id = e.campaign_id
       LEFT JOIN ranking AS r ON r.campaign_id = e.campaign_id
   `, queryArgs);
+  result.forEach(e => e.ranking = ordinal(e.ranking));
   const campaignsReports = result;
   return {
     campaigns: campaignsReports
   };
 };
-  
-router.get('/login', function (req, res) {
-  res.render('login');
-});
-  
+
 router.post('/login', async function (req, res) {
   try {
     const {
@@ -143,7 +141,7 @@ router.get('/logout', function (req, res) {
     console.log(error);
     return res.sendStatus(500);
   });
-  return res.sendStatus(200);
+  return res.redirect('/login');
 });
 
 router.get('/campaigns', async function (req, res, next) {

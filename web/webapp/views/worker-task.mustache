@@ -2,7 +2,8 @@
 <html lang="en">
   {{> head}}
   <body>
-    <div class="container">
+    {{> header}}
+    <div class="container" id="body">
       <form action="/worker/campaign/{{task.campaignId}}/task/{{task.id}}/choice" method="POST">
         <div class="row">
           <h1 id="task-title" name="title">{{task.name}}</h1>
@@ -24,5 +25,6 @@
         </div>
       </form>
     </div>
+    {{> footer}}
   </body>
 </html>

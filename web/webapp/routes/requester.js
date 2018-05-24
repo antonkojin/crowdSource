@@ -193,7 +193,7 @@ router.get('/campaigns', async function (req, res, next) {
       requester: requesterId
     });
     console.log({campaigns});
-    res.render('requester-campaigns', {campaigns});
+    res.render('requester-campaigns', {campaigns, title: 'Campaigns'});
   } catch (error) {
     console.log(error);
     res.sendStatus(500);

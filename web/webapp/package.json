@@ -16,6 +16,8 @@
     "express-session": "^1.15.6",
     "morgan": "~1.9.0",
     "mustache-express4": "0.0.7",
+    "node-sass-middleware": "^0.11.0",
+    "ordinal": "^1.0.2",
     "pg-promise": "^8.2.2",
     "serve-favicon": "~2.4.5"
   },
