@@ -19,10 +19,10 @@ router.post('/signup', async function (req, res) {
         userType: req.body.user
       }
     );
-    res.send('SIGNED UP');
+    res.redirect('/login', 302);
   } catch (error) {
     if (error.code == db.errorCodes.unique_violation) {
-      res.send('ALREDY REGISTERED');
+      res.redirect('/login', 409);
     } else {
       console.error(error);
       res.sendStatus(500);

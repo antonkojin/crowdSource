@@ -6,15 +6,18 @@ const ordinal = require('ordinal');
 
 async function getAppliableOngoingAndCompletedCampagns(workerId) {
   const appliable = await (db.db.any(`
-  SELECT * FROM
-  campaign
+    SELECT * FROM campaign
     WHERE apply_end > CURRENT_TIMESTAMP
     AND id NOT IN (
       SELECT campaign FROM
       worker_campaign
-      WHERE worker = $\{worker} 
+      WHERE worker = $\{worker}
+    ) AND EXISTS (
+      SELECT * FROM task
+      WHERE task.campaign = campaign.id
+      AND task.result IS NULL
     )
-    `, {
+  `, {
     worker: workerId
   }));
   
@@ -121,7 +124,7 @@ router.post('/login', async function (req, res) {
     res.redirect('campaigns');
   } catch(error) {
     if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
-      res.sendStatus(403);
+      res.redirect('/login', 403);
     } else {
       console.error(error);
       res.sendStatus(500);
@@ -132,16 +135,15 @@ router.post('/login', async function (req, res) {
 router.use((req, res, next) => {
   console.log(req.session);
   console.log({sessionId: req.sessionID});
-  if ( !req.session.user ) return res.sendStatus(403);
+  if ( !req.session.user ) return res.redirect('/login', 403);
   next();
 });
 
 router.get('/logout', function (req, res) {
   req.session.destroy(error => {
-    console.log(error);
-    return res.sendStatus(500);
+    if (error) res.sendStatus(500);
+    else return res.redirect('/login');
   });
-  return res.redirect('/login');
 });
 
 router.get('/campaigns', async function (req, res, next) {

@@ -8,10 +8,6 @@ router.get('/verification', function (req, res, next) {
   res.render('requester-verification');
 });
 
-router.get('/login', function (req, res) {
-  res.render('login');
-});
-
 router.post('/login', async function (req, res) {
   try {
     const { id: requesterId, password: requesterPassword } = await db.db.one(`
@@ -21,7 +17,7 @@ router.post('/login', async function (req, res) {
       email: req.body.email
     });
     const passwordMatch = await bcrypt.compare(req.body.password, requesterPassword);
-    if (!passwordMatch) return res.sendStatus(403); 
+    if (!passwordMatch) return res.redirect('/login', 403); 
     req.session.user = {
       id: requesterId,
       type: 'requester'
@@ -32,7 +28,7 @@ router.post('/login', async function (req, res) {
     res.redirect('campaigns');
   } catch(error) {
     if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
-      res.sendStatus(403);
+      res.redirect('/login', 403);
     } else {
       console.error(error);
       res.sendStatus(500);
@@ -43,16 +39,15 @@ router.post('/login', async function (req, res) {
 router.use((req, res, next) => {
   console.log(req.session);
   console.log({sessionId: req.sessionID});
-  if ( !req.session.user ) return res.sendStatus(403);
+  if ( !req.session.user ) return res.redirect('/login', 403);
   next();
 });
 
 router.get('/logout', function (req, res) {
   req.session.destroy(error => {
-    console.log(error);
-    return res.sendStatus(500);
+    if (error) res.sendStatus(500);
+    else return res.redirect('/login');
   });
-  res.redirect('login');
 });
 
 router.get('/new-campaign', function (req, res, next) {
@@ -145,7 +140,7 @@ router.post('/new-campaign', function (req, res) {
       });
 
 
-
+      console.log(req.body);
       const promises = req.body.tasks.map(async task => {
         const taskId = await insertTask(transaction, {
           name: task.title,
