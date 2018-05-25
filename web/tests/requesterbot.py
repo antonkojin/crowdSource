@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 
+from datetime import datetime
+from datetime import timedelta
+
+config = {
+    'majority_threshold': 5,
+    'workers_per_task': 3,
+    'apply_end': (datetime.today() + timedelta(days=30)).isoformat()[:-7],
+    'start': datetime.today().isoformat()[:-7],
+    'end': (datetime.today() + timedelta(days=30)).isoformat()[:-7],
+    'tasks_number': 100,
+    'keyword_length': 3,
+    'keywords_number': 100
+  }
+
 import requests
 from pyquery import PyQuery as pq
 session = requests.Session()
@@ -28,15 +42,14 @@ def login():
   })
 
 def create_campaign():
-  from datetime import datetime
   import random
   campaign = {
     'name': random_string(9),
-    'majority_threshold': 9,
-    'workers_per_task': 99,
-    'apply_end': datetime.today().isoformat()[:-7],
-    'start': datetime.today().isoformat()[:-7],
-    'end': datetime.today().isoformat()[:-7],
+    'majority_threshold': config['majority_threshold'],
+    'workers_per_task': config['workers_per_task'],
+    'apply_end': config['apply_end'],
+    'start': config['start'],
+    'end': config['end'],
     'tasks': [
       {
         'title': random_string(10),
@@ -47,17 +60,22 @@ def create_campaign():
             'value': random_string(3)
           } for _ in range(random.randint(2,4))
         ],
-        'keywords': [random_string(3) for _ in range(20)]
+        'keywords': list(set([random_string(config['keyword_length']) for _ in range(config['keywords_number'])]))
       }
-      for _ in range(50)
+      for _ in range(config['tasks_number'])
     ]
   }
+  start_time = datetime.now()
+  print('request start')
   request('POST', 'requester/new-campaign', json=campaign)
+  print('request time:', datetime.now() - start_time)
 
 email = random_string(9) + '@' + random_string(9) + '.' + random_string(3)
 print('email:', email)
-password = random_string(10)
+password = '0'
 print('password:', password)
+from pprint import pprint as pp
+# pp(confisg)
 
 signup()
 login()

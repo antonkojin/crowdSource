@@ -19,7 +19,7 @@ router.post('/signup', async function (req, res) {
         userType: req.body.user
       }
     );
-    res.redirect('/login', 302);
+    res.redirect(302, '/login');
   } catch (error) {
     if (error.code == db.errorCodes.unique_violation) {
       res.redirect('/login', 409);

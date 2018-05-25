@@ -23,8 +23,8 @@ router.post('/login', async function (req, res) {
       type: 'requester'
     };
     req.session.cookie.path = '/requester/'
-    console.log(req.session);
-    console.log(req.session.id);
+    // console.log(req.session);
+    // console.log(req.session.id);
     res.redirect('campaigns');
   } catch(error) {
     if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
@@ -37,8 +37,8 @@ router.post('/login', async function (req, res) {
 });
 
 router.use((req, res, next) => {
-  console.log(req.session);
-  console.log({sessionId: req.sessionID});
+  // console.log(req.session);
+  // console.log({sessionId: req.sessionID});
   if ( !req.session.user ) return res.redirect('/login', 403);
   next();
 });
@@ -96,23 +96,36 @@ async function insertTask(transaction, task) {
 
 async function insertKeyword(transaction, keyword) {
   const queryInsertKeyword = `
-    INSERT INTO keyword (description)
-    VALUES (\${description})
-    ON CONFLICT DO NOTHING
-    RETURNING id;
+    WITH sel AS (
+      SELECT keyword.id
+      FROM keyword
+      WHERE description = \${description}  
+    ),
+    ins AS (
+      INSERT INTO keyword (description)
+      VALUES (\${description})
+      ON CONFLICT DO NOTHING
+      RETURNING id
+    )
+    SELECT id FROM sel
+    UNION ALL
+    SELECT id FROM ins
   `;
   const queryGetKeywordId = `
     SELECT keyword.id
     FROM keyword
-    WHERE description = \${description};
+    WHERE description = \${description}
   `;
-  const insertResult = await (transaction.oneOrNone(queryInsertKeyword, keyword));
-  if ( insertResult !== null ) {
-    return insertResult.id;
-  } else {
-    const { id } = await (transaction.one(queryGetKeywordId, keyword));
-    return id;
-  }
+
+    var result;
+    try {
+      result = await (transaction.one(queryInsertKeyword, keyword));
+    } catch(error) {
+      if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
+        result = await (transaction.one(queryGetKeywordId, keyword));
+      }
+    }
+    return result.id;
 };
 
 function insertTaskKeyword(transaction, {taskId, keywordId}) {
@@ -125,7 +138,9 @@ function insertTaskKeyword(transaction, {taskId, keywordId}) {
 };
 
 router.post('/new-campaign', function (req, res) {
-  db.db.tx(async transaction => {
+  db.db.tx(
+    // {mode: new db.pgp.txMode.TransactionMode(db.pgp.txMode.isolationLevel.serializable)},
+    async transaction => {
     // campaign -> task -> {choice, keyword -> task_keyword) the leafs are unresolved
     const requesterId = req.session.user.id;
     try {
@@ -140,7 +155,7 @@ router.post('/new-campaign', function (req, res) {
       });
 
 
-      console.log(req.body);
+      // console.log(req.body);
       const promises = req.body.tasks.map(async task => {
         const taskId = await insertTask(transaction, {
           name: task.title,
@@ -172,8 +187,14 @@ router.post('/new-campaign', function (req, res) {
       
       await transaction.batch(promises);
       res.sendStatus(200);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      // if (error.name == 'BatchError') {
+      //   // console.log(error.message.slice(0, 100));
+      //   console.log(error.toString().slice(0, 1000));
+      // } else {
+      //   // console.log(error);
+      // }
+      console.error(error.message);
       res.sendStatus(500);
     }
   });
@@ -187,7 +208,7 @@ router.get('/campaigns', async function (req, res, next) {
     `, {
       requester: requesterId
     });
-    console.log({campaigns});
+    // console.log({campaigns});
     res.render('requester-campaigns', {campaigns, title: 'Campaigns'});
   } catch (error) {
     console.log(error);
@@ -251,7 +272,7 @@ router.get('/report/:campaignId', async function (req, res, next) {
       tasks: tasksReports,
       topTenWorkers: topTenWorkers
     };
-    console.log(viewArgs);
+    // console.log(viewArgs);
     res.render('requester-campaign-report', viewArgs);
   } catch (error) {
     console.log(error);

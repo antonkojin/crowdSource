@@ -31,25 +31,37 @@ async function getAppliableOngoingAndCompletedCampagns(workerId) {
   }));
   
   const ongoing = await (db.db.any(`
-  WITH completed_tasks AS (
-    SELECT task.id
-    FROM worker_choice
-    JOIN choice ON choice.id = worker_choice.choice
-      JOIN task ON task.id = choice.task
-      JOIN campaign ON campaign.id = task.campaign
-      GROUP BY task.id, campaign.workers_per_task
-      HAVING COUNT(worker_choice.worker) >= campaign.workers_per_task
-    ) SELECT campaign.id, campaign.name
-      FROM campaign
-      JOIN task ON task.campaign = campaign.id
-      JOIN worker_campaign ON worker_campaign.campaign = campaign.id
-      WHERE task.id NOT IN (SELECT id FROM completed_tasks)
-      AND worker_campaign.worker = \${worker}
-      GROUP BY campaign.id
+    SELECT * FROM campaign
+    WHERE "end" > CURRENT_TIMESTAMP
+    AND id IN (
+      SELECT campaign FROM
+      worker_campaign
+      WHERE worker = $\{worker}
+    ) AND EXISTS (
+      SELECT * FROM task
+      WHERE task.campaign = campaign.id
+      AND task.result IS NULL
+    )
+
+    --WITH completed_tasks AS (
+    --  SELECT task.id
+    --  FROM worker_choice
+    --  JOIN choice ON choice.id = worker_choice.choice
+    --    JOIN task ON task.id = choice.task
+    --    JOIN campaign ON campaign.id = task.campaign
+    --    GROUP BY task.id, campaign.workers_per_task
+    --    HAVING COUNT(worker_choice.worker) >= campaign.workers_per_task
+    --  ) SELECT campaign.id, campaign.name
+    --    FROM campaign
+    --    JOIN task ON task.campaign = campaign.id
+    --    JOIN worker_campaign ON worker_campaign.campaign = campaign.id
+    --    WHERE task.id NOT IN (SELECT id FROM completed_tasks)
+    --    AND worker_campaign.worker = \${worker}
+    --    GROUP BY campaign.id
       `, {
         worker: workerId
   }));
-  console.log(ongoing);
+  // console.log(ongoing);
   // completed = applied - ongoing
   const completed = applied.filter(a => ongoing.reduce((notContains, o) => notContains && !(a.id == o.id), true));
   return { completed, appliable, ongoing };
@@ -119,8 +131,8 @@ router.post('/login', async function (req, res) {
       type: 'worker'
     };
     req.session.cookie.path = '/worker/'
-    console.log(req.session);
-    console.log(req.session.id);
+    // console.log(req.session);
+    // console.log(req.session.id);
     res.redirect('campaigns');
   } catch(error) {
     if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
@@ -133,8 +145,8 @@ router.post('/login', async function (req, res) {
 });
 
 router.use((req, res, next) => {
-  console.log(req.session);
-  console.log({sessionId: req.sessionID});
+  // console.log(req.session);
+  // console.log({sessionId: req.sessionID});
   if ( !req.session.user ) return res.redirect('/login', 403);
   next();
 });
@@ -198,7 +210,7 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
       ), tasks_keywords AS (
         -- only if  workerker applied to the campaign
         SELECT task.id AS task, task_keyword.keyword FROM
-        task LEFT JOIN task_keyword
+        task JOIN task_keyword
           ON task.id = task_keyword.task
         JOIN campaign
           ON campaign.id = task.campaign
@@ -206,7 +218,7 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
           ON worker_campaign.campaign = \${campaign}
         WHERE task.campaign = \${campaign}
           AND worker_campaign.worker = \${worker}
-          AND campaign.workers_per_task > (
+          AND campaign.workers_per_task >= (
             SELECT COUNT(worker) FROM worker_choice JOIN choice ON worker_choice.choice = choice.id WHERE choice.task = task.id
           )
         AND task.id NOT IN (SELECT * FROM done_tasks)
@@ -267,7 +279,7 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
       choices: choices,
       campaignId: campaignId
     };
-    console.log(task);
+    // console.log(task);
 
     res.render('worker-task', { task: task });
   } catch (error) {

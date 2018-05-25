@@ -33,6 +33,7 @@ def applyCampaignsAndAnswerTasks():
   if len(appliable_campaigns) == 0:
     print('no appliable campaigns')
     return
+  counter = 0
   for campaign_id in appliable_campaigns:
     request('post', 'worker/campaigns/apply/{}'.format(campaign_id))
     print('applied to campaign {}'.format(campaign_id))
@@ -49,15 +50,16 @@ def applyCampaignsAndAnswerTasks():
         'worker/campaign/{}/task/{}/choice'.format(campaign_id, task_id),
         {'choice': choice}
       )
-      print('made my choice on task {}'.format(task_id))
       q2 = pq(request('GET', 'worker/campaign/{}/task'.format(campaign_id)).text)
+      counter = counter + 1
+      print('worker: {} count: {} campaign: {} task: {}'.format(email, counter, campaign_id, task_id))
     print('no more tasks for campaign {}'.format(campaign_id))
       
 
   
 email = random_string(9) + '@' + random_string(9) + '.' + random_string(3)
 print('email:', email)
-password = random_string(10)
+password = '0'
 print('password:', password)
 
 signup()
