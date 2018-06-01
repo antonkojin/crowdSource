@@ -1,5 +1,5 @@
 + signup
-- auth
++ auth
 requesters:
     - approval of the admin
     + campaign creation (with name) (non db)
