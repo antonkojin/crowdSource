@@ -9,8 +9,8 @@ config = {
     'apply_end': (datetime.today() + timedelta(days=30)).isoformat()[:-7],
     'start': datetime.today().isoformat()[:-7],
     'end': (datetime.today() + timedelta(days=30)).isoformat()[:-7],
-    'tasks_number': 100,
-    'keyword_length': 3,
+    'tasks_number': 20,
+    'keyword_length': 6,
     'keywords_number': 100
   }
 

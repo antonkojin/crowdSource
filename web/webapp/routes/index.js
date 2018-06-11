@@ -36,5 +36,21 @@ router.get('/login', function (req, res) {
     title: 'Login'
   });
 });
+
+router.get('/keywords/suggestions/:userInput', async function (req, res, next) {
+  const userInput = req.params.userInput;
+  try {
+    const keywords = await db.db.any(`
+    SELECT description FROM keyword
+    WHERE description LIKE '%\${userInput:raw}%'
+    `, {
+      userInput: userInput
+    });
+    res.json(keywords.map(k => k.description));
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
   
 module.exports = router;

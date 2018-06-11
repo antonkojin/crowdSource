@@ -111,6 +111,31 @@ const createCampaign = (() => {
     document.querySelector('#campaign-apply-end').value = end;
     const createCampaignButton = document.getElementById('create-campaign-button');
     createCampaignButton.onclick = createCampaign;
+
+    const keywordsInput = document.querySelector('#new-task-keywords');
+    const awesomelete = new Awesomplete(keywordsInput, {
+      filter: (text, input) => {
+        return Awesomplete.FILTER_CONTAINS(text, input.match(/[^,]*$/)[0]);
+      },
+      item: (text, input) => {
+        return Awesomplete.ITEM(text, input.match(/[^,]*$/)[0]);
+      },
+      replace: function(text) {
+        var before = this.input.value.match(/^.+,\s*|/)[0];
+        this.input.value = before + text + ', ';
+      }
+    });
+    keywordsInput.addEventListener('input', () => {
+      const item = keywordsInput.value.match(/[^,]*$/)[0].trim();
+      fetch(`/keywords/suggestions/${item}`, {
+        method: 'GET',
+      }).then(resp => resp.json())
+        .then(keywords => {
+          awesomelete.list = keywords;
+          awesomelete.evaluate();
+        });
+    }, false);
+    
   };
 
   return {
