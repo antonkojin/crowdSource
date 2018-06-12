@@ -10,6 +10,7 @@ async function getProfileKeywords(workerId) {
     FROM keyword AS k JOIN worker_attitude AS wa
     ON k.id = wa.keyword
     WHERE wa.worker = \${workerId}
+    ORDER BY wa.level DESC
   `, {
     workerId
   });

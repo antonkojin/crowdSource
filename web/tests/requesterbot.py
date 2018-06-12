@@ -11,17 +11,21 @@ config = {
     'end': (datetime.today() + timedelta(days=30)).isoformat()[:-7],
     'tasks_number': 20,
     'keyword_length': 6,
-    'keywords_number': 100
+    'keywords_number': 100,
+    'default_keyword': 'music'
   }
 
 import requests
 from pyquery import PyQuery as pq
 session = requests.Session()
 
-def random_string(n):
+def random_string(n, spaces=False):
   import random
   import string
-  return ''.join(random.choice(string.ascii_lowercase) for _ in range(n))
+  domain = string.ascii_lowercase
+  if spaces:
+    domain = domain + ' '
+  return ''.join(random.choice(domain) for _ in range(n))
 
 def request(method, url, data=None, json=None):
   res = session.request(method, 'http://localhost/' + url, data=data, json=json)
@@ -52,15 +56,15 @@ def create_campaign():
     'end': config['end'],
     'tasks': [
       {
-        'title': random_string(10),
-        'context': random_string(40),
+        'title': random_string(10, True),
+        'context': random_string(40, True),
         'choices': [
           {
             'name': random_string(4),
             'value': random_string(3)
           } for _ in range(random.randint(2,4))
         ],
-        'keywords': list(set([random_string(config['keyword_length']) for _ in range(config['keywords_number'])]))
+        'keywords': list(set([random_string(config['keyword_length']) for _ in range(config['keywords_number'])])) + [config['default_keyword']]
       }
       for _ in range(config['tasks_number'])
     ]

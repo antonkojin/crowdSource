@@ -10,21 +10,21 @@ router.get('/verification', function (req, res, next) {
 
 router.post('/login', async function (req, res) {
   try {
-    const { id: requesterId, password: requesterPassword } = await db.db.one(`
-      SELECT id, password
+    const requester = await db.db.one(`
+      SELECT id, password, verified
       FROM requester WHERE email = \${email}
     `, {
       email: req.body.email
     });
-    const passwordMatch = await bcrypt.compare(req.body.password, requesterPassword);
-    if (!passwordMatch) return res.redirect('/login', 403); 
+    if (requester.verified == false) return res.redirect(200, 'verification');
+    const passwordMatch = await bcrypt.compare(req.body.password, requester.password);
+    if (!passwordMatch) return res.redirect(403, '/login'); 
     req.session.user = {
-      id: requesterId,
+      id: requester.id,
       type: 'requester'
     };
     req.session.cookie.path = '/requester/'
-    // console.log(req.session);
-    // console.log(req.session.id);
+    console.log(req.session);
     res.redirect('campaigns');
   } catch(error) {
     if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
@@ -39,7 +39,7 @@ router.post('/login', async function (req, res) {
 router.use((req, res, next) => {
   // console.log(req.session);
   // console.log({sessionId: req.sessionID});
-  if ( !req.session.user ) return res.redirect('/login', 403);
+  if ( !req.session.user ) return res.redirect(403, '/login');
   next();
 });
 

@@ -1,7 +1,10 @@
+
+
 CREATE TABLE requester (
   id SERIAL PRIMARY KEY,
   email VARCHAR UNIQUE NOT NULL,
-  password VARCHAR NOT NULL
+  password VARCHAR NOT NULL,
+  verified BOOLEAN NOT NULL DEFAULT true -- TODO: should be verified by the admin
 );
 
 CREATE TABLE worker (

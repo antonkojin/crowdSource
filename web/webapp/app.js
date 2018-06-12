@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(sass({
   src: path.join(__dirname, 'scss'),
-  // dest: path.join(__dirname, 'public'),
+  dest: path.join(__dirname, 'public'),
   debug: true,
   response: true,
   prefix: '/css'
