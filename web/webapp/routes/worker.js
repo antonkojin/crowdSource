@@ -4,6 +4,17 @@ const {inspect} = require('util');
 const bcrypt = require('bcrypt');
 const ordinal = require('ordinal');
 
+async function getProfileKeywords(workerId) {
+  return db.db.any(`
+    SELECT k.description, wa.level
+    FROM keyword AS k JOIN worker_attitude AS wa
+    ON k.id = wa.keyword
+    WHERE wa.worker = \${workerId}
+  `, {
+    workerId
+  });
+};
+
 async function getAppliableOngoingAndCompletedCampagns(workerId) {
   const appliable = await (db.db.any(`
     SELECT * FROM campaign
@@ -163,7 +174,9 @@ router.get('/campaigns', async function (req, res, next) {
   try {
     const campaigns = await getAppliableOngoingAndCompletedCampagns(workerId);
     const reports = await getReports(workerId);
-    res.render('worker-campaigns', { campaigns, reports });
+    const profile_keywords = await getProfileKeywords(workerId);
+    
+    res.render('worker-campaigns', { campaigns, reports, profile_keywords });
   } catch (error) {
     console.error(error);
     res.sendStatus(500);

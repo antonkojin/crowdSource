@@ -4,8 +4,8 @@ from datetime import datetime
 from datetime import timedelta
 
 config = {
-    'majority_threshold': 5,
-    'workers_per_task': 3,
+    'majority_threshold': 1,
+    'workers_per_task': 2,
     'apply_end': (datetime.today() + timedelta(days=30)).isoformat()[:-7],
     'start': datetime.today().isoformat()[:-7],
     'end': (datetime.today() + timedelta(days=30)).isoformat()[:-7],

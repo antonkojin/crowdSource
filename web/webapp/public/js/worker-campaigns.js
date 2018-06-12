@@ -1,4 +1,4 @@
-const onLoad = (() => {
+const workerCampaigns = (() => {
   const applyCampaign = function(event) {
     const campaignId = event.target.getAttribute('data-campaign-id');
     fetch(`/worker/campaigns/apply/${campaignId}`, {
@@ -19,7 +19,16 @@ const onLoad = (() => {
     htmlAppliableCampaigns.forEach(e => e.onclick = applyCampaign);
   };
 
-  return init;
+  const toggleDisplay = cssSelector => {
+    const el = document.querySelector(cssSelector);
+    const display = el.style.display;
+    el.style.display = display == 'none' ? 'block' : 'none';
+  };
+
+  return {
+    init,
+    toggleDisplay
+  };
 })();
 
-document.addEventListener('DOMContentLoaded', onLoad, false);
+document.addEventListener('DOMContentLoaded', workerCampaigns.init, false);
