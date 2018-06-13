@@ -1,3 +1,4 @@
+INSERT INTO admin(password) VALUES ('$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK');
 INSERT INTO requester (email, password) VALUES
 ('requester@mail.test', '$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK');
 INSERT INTO worker (email, password) VALUES

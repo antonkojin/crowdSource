@@ -11,6 +11,7 @@ const sass = require('node-sass-middleware');
 const db = require('./lib/db');
 
 var index = require('./routes/index');
+var admin = require('./routes/admin');
 var worker = require('./routes/worker');
 var requester = require('./routes/requester');
 
@@ -51,6 +52,7 @@ app.use(session({
 }));
 
 app.use('/', index);
+app.use('/admin', admin);
 app.use('/worker', worker);
 app.use('/requester', requester);
 

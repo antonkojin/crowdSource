@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  {{> head}}
+  <body>
+    {{> header}}
+    <div class="container" id="body">
+      <div class="row">
+        <div class="columns six offset-by-three">
+          <h1>Admin login</h1>
+        </div>
+      </div>
+      <form action="/admin/login" method="POST">
+        <div class="row">
+          <div class="columns six offset-by-three">
+            <input class="u-full-width" id="password" type="password" placeholder="Password" name="password" required>
+          </div>
+          <div class="row">
+            <div class="columns six offset-by-three">
+              <button class="button-primary" type="submit">Login</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    {{> footer}}
+  </body>
+</html>

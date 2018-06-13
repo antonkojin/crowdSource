@@ -30,8 +30,7 @@ router.post('/signup', async function (req, res) {
   }
 });
 
-
-router.get('/login', function (req, res) {
+router.get('/|/login', function (req, res) {
   res.render('login', {
     title: 'Login'
   });

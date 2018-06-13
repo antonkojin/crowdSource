@@ -1,10 +1,10 @@
-
+CREATE TABLE admin (password VARCHAR NOT NULL);
 
 CREATE TABLE requester (
   id SERIAL PRIMARY KEY,
   email VARCHAR UNIQUE NOT NULL,
   password VARCHAR NOT NULL,
-  verified BOOLEAN NOT NULL DEFAULT true -- TODO: should be verified by the admin
+  verified BOOLEAN NOT NULL DEFAULT false -- TODO: should be verified by the admin, admin pw in ENV
 );
 
 CREATE TABLE worker (
