@@ -103,7 +103,7 @@ const createCampaign = (() => {
       document.querySelector('#new-task-modal-background').style.display = 'none';
       e.preventDefault();
     };
-    // TODO: locale time? mhh, nope
+    
     const start = new Date().toISOString().slice(0, -8);
     const end = new Date(new Date().getTime() + (365 * 24 * 60 * 60 * 1000)).toISOString().slice(0, -8);
     document.querySelector('#campaign-start').value = start;

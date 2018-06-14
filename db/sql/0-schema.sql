@@ -4,7 +4,7 @@ CREATE TABLE requester (
   id SERIAL PRIMARY KEY,
   email VARCHAR UNIQUE NOT NULL,
   password VARCHAR NOT NULL,
-  verified BOOLEAN NOT NULL DEFAULT false -- TODO: should be verified by the admin, admin pw in ENV
+  verified BOOLEAN NOT NULL DEFAULT false
 );
 
 CREATE TABLE worker (
@@ -69,7 +69,6 @@ CREATE TABLE worker_choice (
   worker INTEGER REFERENCES worker(id) ON UPDATE CASCADE,
   choice INTEGER REFERENCES choice(id) ON UPDATE CASCADE,
   PRIMARY KEY (worker, choice)
-  -- TODO: unique(worker, choice.task) constraint
 );
 
 CREATE TABLE "session" (
