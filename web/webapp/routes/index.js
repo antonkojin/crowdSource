@@ -30,12 +30,6 @@ router.post('/signup', async function (req, res) {
   }
 });
 
-router.get('/|/login', function (req, res) {
-  res.render('login', {
-    title: 'Login'
-  });
-});
-
 router.get('/keywords/suggestions/:userInput', async function (req, res, next) {
   const userInput = req.params.userInput;
   try {
@@ -50,6 +44,12 @@ router.get('/keywords/suggestions/:userInput', async function (req, res, next) {
     console.log(error);
     res.sendStatus(500);
   }
+});
+
+router.get('/login', function (req, res) {
+  res.render('login', {
+    title: 'Login'
+  });
 });
   
 module.exports = router;

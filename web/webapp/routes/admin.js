@@ -4,7 +4,8 @@ const bcrypt = require('bcrypt');
 const db = require('../lib/db');
 
 router.get('/login', function (req, res) {
-  res.render('admin-login')
+  if (!req.session.user) res.render('admin-login');
+  else res.redirect('/admin/requesters')
 });
 
 router.post('/login', async function (req, res) {
@@ -16,13 +17,13 @@ router.post('/login', async function (req, res) {
     type: 'admin'
   };
   req.session.cookie.path = '/admin/'
-  res.redirect('requesters');
+  res.redirect(301, 'requesters');
 });
 
 router.use((req, res, next) => {
   console.log(req.session);
-  if ( !req.session.user ) return res.redirect('login', 403);
-  next();
+  if ( !req.session.user ) return res.redirect('/admin/login');
+  next('route');
 });
 
 router.get('/requesters', async function (req, res) {
@@ -66,6 +67,5 @@ router.get('/logout', function (req, res) {
     else return res.redirect('login');
   });
 });
-
   
 module.exports = router;

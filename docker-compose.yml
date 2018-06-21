@@ -5,7 +5,6 @@ services:
     build: web/
     image: web
     environment:
-      - PORT=443
       - DATABASE_URL=postgres://db_user:db_password@db:5432/db_name
       - DEBUG=myapp:*
       - NODE_ENV=development
@@ -16,7 +15,6 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 9229:9229
     command: npm run dev
   db:
     restart: unless-stopped
