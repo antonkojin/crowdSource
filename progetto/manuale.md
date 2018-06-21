@@ -12,4 +12,5 @@ All'interno della cartella contenente l'applicazione eseguire il seguente comand
 ```sh
 docker-compose up
 ```
-
+## Account amministratore
+Per confermare la registrazione dei requester, e' necessario collegarsi alla pagina `[domain]/admin` ed eseguire il login con la password predefinita `0`. Successivamente al login sara' possibile cambiare la password dell'amministratore.
