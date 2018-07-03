@@ -221,8 +221,8 @@ router.get('/report/:campaignId', async function (req, res, next) {
   const campaignId = req.params.campaignId;
   try {
     // name, id, completed, ongoing, valid/executed, tasks with result if any 
-    const campaignName = await db.db.one(`
-      SELECT name FROM campaign WHERE id = \${campaign} AND requester = \${requester}
+    const campaign = await db.db.one(`
+      SELECT name, workers_per_task, majority_threshold FROM campaign WHERE id = \${campaign} AND requester = \${requester}
     `, {
       campaign: campaignId,
       requester: requesterId
@@ -263,9 +263,13 @@ router.get('/report/:campaignId', async function (req, res, next) {
       campaign: campaignId
     });
 
+
+
     const viewArgs = {
       id: campaignId,
-      name: campaignName.name,
+      name: campaign.name,
+      workers_per_task: campaign.workers_per_task,
+      majority_threshold: campaign.majority_threshold,
       completedTasks: completedAndOngoingTasks.completed_tasks,
       ongoingTasks: completedAndOngoingTasks.ongoing_tasks,
       validTasks: validTasks.valid_tasks,

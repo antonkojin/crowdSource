@@ -212,12 +212,12 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
   const workerId = req.session.user.id;
   const campaignId = req.params.campaignId;
   try {
-    const resultTaskId = await db.db.func('assign_task', [
+    const result = await db.db.func('assign_task', [
       workerId,
       campaignId
     ]);
-    const taskId = resultTaskId.task;
-
+    const taskId = result[0].assign_task;
+    console.log(taskId);
     const resultTask = await db.db.one(`
       SELECT id, name, context
       FROM task

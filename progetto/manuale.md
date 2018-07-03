@@ -3,6 +3,26 @@ Installare i seguenti software seguendo le relative guide
 - [Docker](https://www.docker.com/community-edition)
 - [Docker compose](https://docs.docker.com/compose/install)
 
+# Struttura
+```
+- docker-compose.yml: startup directives
+- db
+  - sql: schema, funzioni e dati
+  - Dockerfile
+- web
+  - webapp
+    - routes: endpoints
+    - lib/db.js: interfaccia database
+    - views: mustache views
+    - scss: scss files
+    - keys: SSL keys
+    - public
+      - js: client side javascript
+      - css: librerie esterne
+      - img: risorse grafiche
+  - Dockerfile
+```
+
 # Avvio
 ## Configurazione
 Dopo esservi procurato un certificato SSL/TLS, copiatelo nella cartella `[application_folder]/web/webapp/keys`. E' necessario per una comunicazione sicura attraverso HTTPS.

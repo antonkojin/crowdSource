@@ -3,6 +3,10 @@
 - Docker
 - PostgreSQL
 - NodeJs
+- SCSS
+- HTML5
+- mustache
+- js
 
 # Progettazione database
 ## Schema concettuale
@@ -79,3 +83,41 @@ trigger: db/sql/1-functions.sql:complete_task
 Dato che tutti i lavoratori hanno tutte le keyword a livello zero se non altrimenti specificato.
 L'aggiornamento del profilo di un lavoratore avviene incrementando o decrementando di uno il livello associato alla keyword, in base all'appartenenza del lavoratore al gruppo che ha dato la risposta maggioritaria.
 Se la keyword viene decrementata al livello zero viene disassociata dal lavoratore e assume il suo valore di default che e' zero, altrimenti, se la keyword viene incrementata a livello uno, dovra' essere associata al lavoratore esplicitamente in quanto possiede ora un livello maggiore di zero.
+
+# Progettazione web
+Gli `endpoint` dell'applicazione:
+```  
+  - /
+    - GET signup/
+    - POST signup/ {user: ['worker', 'requester']}
+    - GET login/
+    - GET keywords/suggestions/{keyword}/
+  - requester/
+    - GET verification/
+    - POST login {email, password}/
+    - GET logout/
+    - GET campaigns/
+    - GET report/{campaign-id}/
+    - GET new-campaign/
+    - POST new-campaign/ {
+        name: string,
+        majority_threshold: integer,
+        workers_per_task: integer,
+        apply_end: datetime,
+        start: datetime,
+        end: datetime,
+        tasks: [
+          title: string,
+          context: string,
+          choices: [{name: string, value: string}],
+          keywords: [string]
+        ]
+    }
+  - worker
+    - POST login/ {email, password}
+    - GET logout/
+    - GET campaigns/
+    - POST campaigns/apply/{campaign-id}/
+    - GET campaign/{campaign-id}/task/
+    - POST campaign/{campaign-id}/task/{task-id}/choice/ {choice: string}
+```
