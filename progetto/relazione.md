@@ -15,6 +15,13 @@
 ## Schema ER
 ![Schema ER](ER.svg)
 
+### Considerazioni su schema ER
+#### Utenti
+Ci sono tre tipologie di utenti, worker, requester e admin.
+L'admin e' un utente unico con nome utente predefinito e password modificabile.
+Mentre il numero di worker e requester non e' fissato. Hanno inoltre attributi simili, ma il requester ne presenta uno in piu', e hanno relazioni diverse.
+Quindi ho scelto di mantenere le entita' figlie invece di raggrupparle in un'entita' padre. Mantenendo cosi' le singole tabelle a risparmio dello spazio che avrebbe occupato ogni worker con un attributo sempre null.
+
 ## Schema relazionale
 `requester(id, email, password, verified)`
 
@@ -86,7 +93,7 @@ Se la keyword viene decrementata al livello zero viene disassociata dal lavorato
 
 # Progettazione web
 Gli `endpoint` dell'applicazione:
-```  
+```
   - /
     - GET signup/
     - POST signup/ {user: ['worker', 'requester']}
