@@ -57,6 +57,9 @@ Successivamente allo svolgimento di un task che risulta valido, vengono aggiorna
 Tutte le competenze/attitudini che si trovano a livello zero in un certo istante, vengono disassociate dal profilo del lavoratore in quanto il livello zero è sottinteso per tutte le keyword per tutti i lavoratori se non altrimenti specificato.
 
 ### Assegnazione task
+```
+function: db/sql/1-functions.sql:assign_task
+```
 L'assegnazione di un task al lavoratore che ne fa richiesta all'interno di una campagna di lavoro è gestita mediante un indice detto `P` calcolato per ogni task della della campagna di lavoro.
 
 Dato un lavoratore che fa richiesta di un task, gli verrà assegnato il task con l'indice `P` massimo tra i task non completati di quella campagna.
@@ -67,9 +70,12 @@ P(task) := somma dei livelli di competenza/attitudine del lavoratore nei confron
 
 Per esempio un lavoratore appena iscritto ha tutte le competenze/attitudini a livello zero, quindi la scelta del task da assegnare diventa casuale.
 
-Al lavoratore non viene preclusa la possibilita' di eseguire task che non gli competono in parte o completamente. Col fine di permettere che i lavoratori possano modellare indipendentemente e "inconsciamente" il proprio profilo per rispecchiare il piu possibile la realta'.
+Al lavoratore non viene preclusa la possibilita' di eseguire task che non gli competono in parte o completamente. Al fine di permettere ai lavoratori di modellare indipendentemente e "inconsciamente" il proprio profilo per rispecchiare il piu possibile la realta'.
 
 ### Aggiornamento profilo lavoratore
+```
+trigger: db/sql/1-functions.sql:complete_task
+```
 Dato che tutti i lavoratori hanno tutte le keyword a livello zero se non altrimenti specificato.
 L'aggiornamento del profilo di un lavoratore avviene incrementando o decrementando di uno il livello associato alla keyword, in base all'appartenenza del lavoratore al gruppo che ha dato la risposta maggioritaria.
 Se la keyword viene decrementata al livello zero viene disassociata dal lavoratore e assume il suo valore di default che e' zero, altrimenti, se la keyword viene incrementata a livello uno, dovra' essere associata al lavoratore esplicitamente in quanto possiede ora un livello maggiore di zero.

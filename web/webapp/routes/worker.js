@@ -212,51 +212,10 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
   const workerId = req.session.user.id;
   const campaignId = req.params.campaignId;
   try {
-    const resultTaskId = await db.db.one(`
-      WITH done_tasks AS (
-        SELECT choice.task FROM
-        worker_choice JOIN choice
-          ON worker_choice.choice = choice.id
-        JOIN task
-          ON choice.task = task.id
-        WHERE worker_choice.worker = \${worker}
-          AND task.campaign = \${campaign}
-      ), tasks_keywords AS (
-        -- only if  workerker applied to the campaign
-        SELECT task.id AS task, task_keyword.keyword FROM
-        task JOIN task_keyword
-          ON task.id = task_keyword.task
-        JOIN campaign
-          ON campaign.id = task.campaign
-        JOIN worker_campaign
-          ON worker_campaign.campaign = \${campaign}
-        WHERE task.campaign = \${campaign}
-          AND worker_campaign.worker = \${worker}
-          AND campaign.workers_per_task >= (
-            SELECT COUNT(worker) FROM worker_choice JOIN choice ON worker_choice.choice = choice.id WHERE choice.task = task.id
-          )
-        AND task.id NOT IN (SELECT * FROM done_tasks)
-      ), worker_keywords AS (
-        SELECT w.keyword, w.level FROM
-        worker_attitude AS w
-        WHERE w.worker = \${worker}
-      ), task_keyword_levels AS (
-        SELECT task, t.keyword, level FROM
-        tasks_keywords AS t LEFT JOIN worker_keywords AS w
-        ON t.keyword = w.keyword
-        ORDER BY level
-      ), tasks_keywords_statistics AS (
-        SELECT task, count(level), SUM(level), MAX(level), MIN(level)
-        FROM task_keyword_levels
-        GROUP BY task
-      ) SELECT task
-        FROM tasks_keywords_statistics
-        ORDER BY sum DESC LIMIT 1
-    ;`, {
-        worker: workerId,
-        campaign: campaignId
-      }
-    );
+    const resultTaskId = await db.db.func('assign_task', [
+      workerId,
+      campaignId
+    ]);
     const taskId = resultTaskId.task;
 
     const resultTask = await db.db.one(`

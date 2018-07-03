@@ -3,6 +3,7 @@
 import requests
 from pyquery import PyQuery as pq
 session = requests.Session()
+session.verify = False
 
 def random_string(n):
   import random
@@ -10,7 +11,7 @@ def random_string(n):
   return ''.join(random.choice(string.ascii_lowercase) for _ in range(n))
 
 def request(method, url, data=None):
-  res = session.request(method, 'http://localhost/' + url, data=data)
+  res = session.request(method, 'https://localhost/' + url, data=data)
   res.raise_for_status()
   return res
 
