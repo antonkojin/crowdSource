@@ -62,23 +62,25 @@ Installare i seguenti software seguendo le relative guide
 \end{itemize}
 
 \section{Configurazione e avvio}
-Dopo esservi procurato un certificato SSL/TLS, copiatelo nella cartella \verb|web/webapp/keys|. \`E necessario per una comunicazione sicura attraverso HTTPS.\\\\
-Per avviare l'applicazione eseguire il comando \verb|docker-compose up|'.
+Dopo esservi procurato un certificato SSL/TLS, copiatelo nella cartella \verb|web/webapp/keys/|. \`E necessario per una comunicazione sicura attraverso HTTPS.\\\\
+Per avviare l'applicazione eseguire il comando \verb|docker-compose up|.
 
 \section{Utilizzo}
 \subsection{Account amministratore}
 Per confermare la registrazione dei requester, \`e necessario collegarsi alla pagina web \verb|admin/| ed eseguire il login con la password predefinita  ``$0$''. Successivamente al login sar\`a possibile cambiare la password dell'amministratore.
 
 \subsection{Worker e Requester}
-Gli utenti dell'applicazione dovranno registrarsi sulla pagine \verb|signup/|.
-successivamente potranno fare il login sulla pagina \verb|login/| che li reindirizzer\`a alle relative dashboard.
+Gli utenti dell'applicazione dovranno registrarsi sulla pagina \verb|signup/|.
+Successivamente potranno fare il login sulla pagina \verb|login/| che li reindirizzer\`a alle relative dashboard.
 
 \subsubsection{Requester}
 I requester, dopo la registrazione, dovranno attendere la verifica da parte dell'amministratore per poter utilizzare l'applicazione. Prima che questo avvenga essi verranno bloccati al login con un avviso.
 
 La pagina principale del requester gli permette di creare nuove campagne di lavoro e di reperire statistiche sulle campagne esistenti.
+Le statistiche sulle campagne di lavoro per i requester comprendono la top 10 dei lavoratori e i risultati dei task se disponibili.
 
 \subsubsection{Worker}
 La pagina principale del worker gli permette di entrare a far parte di nuove campagne di lavoro e di richiedere un task da eseguire per le campagne disponibili.
+Inoltre visualizza anche delle statustiche sulle campagne a cui il lavoratore ha partecipato e il proprio profilo, cio\`e le keyword con il relativo livello del lavoratore.
 
 \end{document}
