@@ -1,10 +1,10 @@
-INSERT INTO admin(password) VALUES ('$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK');
+INSERT INTO admin(password) VALUES ('$2b$10$XVjGKj152Y8iuZkhT8v5HOxxFeUiUigmUxlokb7rZaF/c.GfF87FC');
 INSERT INTO requester (email, password) VALUES
-('requester@mail.test', '$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK');
+('requester@mail.test', '$2b$10$XVjGKj152Y8iuZkhT8v5HOxxFeUiUigmUxlokb7rZaF/c.GfF87FC');
 INSERT INTO worker (email, password) VALUES
-('worker@mail.test', '$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK'),
-('worker2@mail.test', '$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK'),
-('worker3@mail.test', '$2b$10$jk.HxLQI66DlZ.xMewuDhusUT3rcmdu3/ZKEYEbE7t0YxVdQBLoVK');
+('worker@mail.test', '$2b$10$XVjGKj152Y8iuZkhT8v5HOxxFeUiUigmUxlokb7rZaF/c.GfF87FC'),
+('worker2@mail.test', '$2b$10$XVjGKj152Y8iuZkhT8v5HOxxFeUiUigmUxlokb7rZaF/c.GfF87FC'),
+('worker3@mail.test', '$2b$10$XVjGKj152Y8iuZkhT8v5HOxxFeUiUigmUxlokb7rZaF/c.GfF87FC');
 
 INSERT INTO campaign (name, majority_threshold, workers_per_task, "start", "end", apply_end, requester) VALUES
 (
