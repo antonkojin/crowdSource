@@ -1,0 +1,84 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[italian]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{float}
+\usepackage[normalem]{ulem}
+
+\title{Manuale progetto database}
+\author{Anton Kozhin}
+
+\begin{document}
+\maketitle
+
+\section{Dipendenze}
+Installare i seguenti software seguendo le relative guide
+\begin{itemize}
+\item Docker: \verb|https://www.docker.com/community-edition|
+\item Docker compose: \verb|https://docs.docker.com/compose/install|
+\end{itemize}
+
+\section{Struttura cartelle}
+\renewcommand{\labelitemi}{$-$}
+\renewcommand{\labelitemii}{$-$}
+\renewcommand{\labelitemiii}{$-$}
+\renewcommand{\labelitemiv}{$-$}
+\begin{itemize}
+  \item docker-compose.yml: startup directives
+  \item db
+  \begin{itemize}  
+    \item sql: schema, funzioni e dati
+    \item Dockerfile  
+  \end{itemize}
+  \item web
+  \begin{itemize}
+    \item Dockerfile
+    \item webapp
+    \begin{itemize}
+      \item routes: endpoints
+      \item lib/db.js: interfaccia database
+      \item views: mustache views
+      \item scss: scss files
+      \item keys: SSL keys
+      \item public
+      \begin{itemize}
+        \item js: client side javascript
+        \item css: librerie esterne
+        \item img: risorse grafiche
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\section{Configurazione e avvio}
+Dopo esservi procurato un certificato SSL/TLS, copiatelo nella cartella \verb|web/webapp/keys|. \`E necessario per una comunicazione sicura attraverso HTTPS.\\\\
+Per avviare l'applicazione eseguire il comando \verb|docker-compose up|'.
+
+\section{Utilizzo}
+\subsection{Account amministratore}
+Per confermare la registrazione dei requester, \`e necessario collegarsi alla pagina web \verb|admin/| ed eseguire il login con la password predefinita  ``$0$''. Successivamente al login sar\`a possibile cambiare la password dell'amministratore.
+
+\subsection{Worker e Requester}
+Gli utenti dell'applicazione dovranno registrarsi sulla pagine \verb|signup/|.
+successivamente potranno fare il login sulla pagina \verb|login/| che li reindirizzer\`a alle relative dashboard.
+
+\subsubsection{Requester}
+I requester, dopo la registrazione, dovranno attendere la verifica da parte dell'amministratore per poter utilizzare l'applicazione. Prima che questo avvenga essi verranno bloccati al login con un avviso.
+
+La pagina principale del requester gli permette di creare nuove campagne di lavoro e di reperire statistiche sulle campagne esistenti.
+
+\subsubsection{Worker}
+La pagina principale del worker gli permette di entrare a far parte di nuove campagne di lavoro e di richiedere un task da eseguire per le campagne disponibili.
+
+\end{document}
