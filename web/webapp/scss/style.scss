@@ -5,22 +5,8 @@ $modal-back-background-color: rgba(216, 216, 216, 0.8);
 $modal-background-color: white;
 $separator-color:darkslateGray;
 
-
-// th,
-// td {
-//   padding: 12px 15px;
-//   text-align: left;
-//   border-bottom: 1px solid #E1E1E1; }
-// th:first-child,
-// td:first-child {
-//   padding-left: 0; }
-// th:last-child,
-// td:last-child {
-//   padding-right: 0; }
-
 header {
     padding: 1rem;
-    // background-color: $header-background-color;
     margin-bottom: 2rem;
     border-bottom: solid 0.2rem $separator-color;
 
@@ -42,10 +28,7 @@ header {
 
 
 footer {
-    // position: absolute;
-    // bottom: 0;
     padding: 1rem;
-    // background-color: $header-background-color;
     margin-top: 2rem;
     border-top: solid 0.2rem $separator-color;
     
@@ -89,7 +72,6 @@ a {
 }
 
 html, body {
-    /* background-color: rgb(0, 232, 131); */
     height: 100%;
 } 
 
