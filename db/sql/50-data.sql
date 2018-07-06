@@ -81,10 +81,10 @@ INSERT INTO choice (name, value, task) VALUES
 ('negative', -1, 5);
 
 INSERT INTO keyword (description) VALUES
-('music'), -- id 1
-('games'), -- id 2
-('porn'), -- id 3
-('sentiment analisys'); -- id 4
+('music'),
+('games'),
+('porn'),
+('sentiment analisys');
 
 INSERT INTO task_keyword (task, keyword) VALUES
 (1, 1), (1, 2),

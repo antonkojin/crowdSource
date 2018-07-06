@@ -1,10 +1,4 @@
--- numero di task validi correttamente eseguiti, cioè task per i quali valgono le seguenti condizioni:
---   - il task è stato eseguito dal lavoratore
---   - il task ha un risultato finale (è stata raggiunta la maggioranza richiesta)
---   - eseguendo il task, la risposta fornita dal lavoratore coincide con il risultato del task,
---     cioè il lavoratore appartiene alla maggioranza che ha determinato il risultato del task.
-CREATE FUNCTION complete_task() -- triggers on insert in worker_choice when workers_per_task in campaign is reached
-RETURNS TRIGGER AS $$
+CREATE FUNCTION complete_task() RETURNS TRIGGER AS $$
 DECLARE
   task_id INTEGER;
   workers_per_task INTEGER;
