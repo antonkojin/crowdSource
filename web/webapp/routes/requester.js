@@ -37,8 +37,6 @@ router.post('/login', async function (req, res) {
 });
 
 router.use((req, res, next) => {
-  // console.log(req.session);
-  // console.log({sessionId: req.sessionID});
   if ( !req.session.user ) return res.redirect(403, '/login');
   next();
 });
@@ -139,9 +137,7 @@ function insertTaskKeyword(transaction, {taskId, keywordId}) {
 
 router.post('/new-campaign', function (req, res) {
   db.db.tx(
-    // {mode: new db.pgp.txMode.TransactionMode(db.pgp.txMode.isolationLevel.serializable)},
     async transaction => {
-    // campaign -> task -> {choice, keyword -> task_keyword) the leafs are unresolved
     const requesterId = req.session.user.id;
     try {
       const campaignId = await insertCampaign(transaction, {
@@ -154,8 +150,6 @@ router.post('/new-campaign', function (req, res) {
         requester: requesterId
       });
 
-
-      // console.log(req.body);
       const promises = req.body.tasks.map(async task => {
         const taskId = await insertTask(transaction, {
           name: task.title,
@@ -188,12 +182,6 @@ router.post('/new-campaign', function (req, res) {
       await transaction.batch(promises);
       res.sendStatus(200);
     } catch (error) {
-      // if (error.name == 'BatchError') {
-      //   // console.log(error.message.slice(0, 100));
-      //   console.log(error.toString().slice(0, 1000));
-      // } else {
-      //   // console.log(error);
-      // }
       console.error(error.message);
       res.sendStatus(500);
     }
@@ -208,7 +196,6 @@ router.get('/campaigns', async function (req, res, next) {
     `, {
       requester: requesterId
     });
-    // console.log({campaigns});
     res.render('requester-campaigns', {campaigns, title: 'Campaigns'});
   } catch (error) {
     console.log(error);
@@ -220,7 +207,6 @@ router.get('/report/:campaignId', async function (req, res, next) {
   const requesterId = req.session.user.id;
   const campaignId = req.params.campaignId;
   try {
-    // name, id, completed, ongoing, valid/executed, tasks with result if any 
     const campaign = await db.db.one(`
       SELECT name, workers_per_task, majority_threshold FROM campaign WHERE id = \${campaign} AND requester = \${requester}
     `, {
@@ -276,7 +262,6 @@ router.get('/report/:campaignId', async function (req, res, next) {
       tasks: tasksReports,
       topTenWorkers: topTenWorkers
     };
-    // console.log(viewArgs);
     res.render('requester-campaign-report', viewArgs);
   } catch (error) {
     console.log(error);

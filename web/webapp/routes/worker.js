@@ -53,28 +53,9 @@ async function getAppliableOngoingAndCompletedCampagns(workerId) {
       SELECT * FROM task
       WHERE task.campaign = campaign.id
       AND task.result IS NULL
-    )
-
-    --WITH completed_tasks AS (
-    --  SELECT task.id
-    --  FROM worker_choice
-    --  JOIN choice ON choice.id = worker_choice.choice
-    --    JOIN task ON task.id = choice.task
-    --    JOIN campaign ON campaign.id = task.campaign
-    --    GROUP BY task.id, campaign.workers_per_task
-    --    HAVING COUNT(worker_choice.worker) >= campaign.workers_per_task
-    --  ) SELECT campaign.id, campaign.name
-    --    FROM campaign
-    --    JOIN task ON task.campaign = campaign.id
-    --    JOIN worker_campaign ON worker_campaign.campaign = campaign.id
-    --    WHERE task.id NOT IN (SELECT id FROM completed_tasks)
-    --    AND worker_campaign.worker = \${worker}
-    --    GROUP BY campaign.id
-      `, {
+    )`, {
         worker: workerId
   }));
-  // console.log(ongoing);
-  // completed = applied - ongoing
   const completed = applied.filter(a => ongoing.reduce((notContains, o) => notContains && !(a.id == o.id), true));
   return { completed, appliable, ongoing };
 };
@@ -143,8 +124,6 @@ router.post('/login', async function (req, res) {
       type: 'worker'
     };
     req.session.cookie.path = '/worker/'
-    // console.log(req.session);
-    // console.log(req.session.id);
     res.redirect('campaigns');
   } catch(error) {
     if (error.code == db.errorCodes.queryResultErrorCodes.noData) {
@@ -157,8 +136,6 @@ router.post('/login', async function (req, res) {
 });
 
 router.use((req, res, next) => {
-  // console.log(req.session);
-  // console.log({sessionId: req.sessionID});
   if ( !req.session.user ) return res.redirect('/login', 403);
   next();
 });
@@ -252,7 +229,6 @@ router.get('/campaign/:campaignId/task', async function (req, res, next) {
       choices: choices,
       campaignId: campaignId
     };
-    // console.log(task);
 
     res.render('worker-task', { task: task });
   } catch (error) {
