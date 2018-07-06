@@ -1,5 +1,5 @@
 FROM postgres
 
 COPY sql/ /docker-entrypoint-initdb.d/
-# COPY . /code/
+COPY . /code/
 CMD ["postgres"]

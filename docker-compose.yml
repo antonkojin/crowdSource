@@ -9,22 +9,23 @@ services:
       - DEBUG=myapp:*
       - NODE_ENV=development
       - SESSION_SECRET=fioa)da(fosfirwj09rhwf80s-90=3m31x-n^$$@C2c%@V&C@*
-    volumes:
-      - ./web/webapp:/usr/src/app:rw
-      - /usr/src/app/node_modules
+#    volumes:
+#      - ./web/webapp:/usr/src/app:rw
+#      - /usr/src/app/node_modules
     ports:
       - 80:80
       - 443:443
-    command: npm run dev
+#   command: npm run dev
+    command: npm start
   db:
     restart: unless-stopped
     build: db/
     image: db
     ports:
       - 5432:5432
-    volumes:
-      - ./db/sql:/docker-entrypoint-initdb.d:rw
-      - ./db:/code
+#    volumes:
+#      - ./db/sql:/docker-entrypoint-initdb.d:rw
+#      - ./db:/code
     environment:
       - POSTGRES_DB=db_name
       - POSTGRES_USER=db_user
